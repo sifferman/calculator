@@ -1,0 +1,6 @@
+build
+slpp_all
+.o
+obj_dir
+*.fst
+*.fst.hier

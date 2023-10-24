@@ -1,0 +1,25 @@
+name: Test
+on:
+  push:
+  schedule:
+    - cron: "0 0 * * *"
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install
+        run: |
+          curl -sSL https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/install | bash -s -- tools --oss-cad-suite --synlig
+          echo "$GITHUB_WORKSPACE/tools/oss-cad-suite/bin" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/tools/synlig/bin" >> $GITHUB_PATH
+      - name: Lint
+        run: |
+          verilator -f calculator.f --lint-only --top calculator
+      - name: Simulate Controller
+        run: |
+          verilator -f calculator.f --binary --top controller_tb
+          ./obj_dir/Vcontroller_tb +verilator+rand+reset+2
+      - name: Run Synthesis
+        run: |
+          yosys -c synlig.tcl
