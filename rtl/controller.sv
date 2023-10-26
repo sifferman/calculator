@@ -20,7 +20,7 @@ module controller (
     input   calc_pkg::num_t             alu_result_i
 );
 
-logic new_input_d, new_input_q;
+logic new_number_d, new_number_q;
 logic [$clog2(calc_pkg::NumDigits):0] display_counter_d, display_counter_q;
 logic dot_recieved_d, dot_recieved_q;
 logic op_pending_d, op_pending_q;
@@ -33,11 +33,11 @@ assign alu_right_o = display_rdata_i;
 assign alu_op_o = last_op_q;
 
 always_comb begin
-    new_input_d = new_input_q;
+    new_number_d = new_number_q;
     op_pending_d = op_pending_q;
     last_op_d = last_op_q;
 
-    if (new_input_q) begin
+    if (new_number_q) begin
         display_counter_d = '0;
         dot_recieved_d = 0;
     end else begin
@@ -54,12 +54,12 @@ always_comb begin
 
     if (new_input_i) begin
         if (calc_pkg::isNumberButton(active_button_i) && (display_counter_q < calc_pkg::NumDigits)) begin
-            if ((new_input_q) && (active_button_i == calc_pkg::B_NUM_0))
-                new_input_d = 1;
+            if ((new_number_q) && (active_button_i == calc_pkg::B_NUM_0))
+                new_number_d = 1;
             else
-                new_input_d = 0;
+                new_number_d = 0;
 
-            if (new_input_q) begin
+            if (new_number_q) begin
                 display_wdata_o = '0;
             end else begin
                 display_wdata_o = display_rdata_i;
@@ -75,12 +75,12 @@ always_comb begin
                 upper_we_o = 1;
             end
         end else if (calc_pkg::isDotButton(active_button_i)) begin
-            new_input_d = 0;
-            if (new_input_q)
+            new_number_d = 0;
+            if (new_number_q)
                 display_counter_d++;
             dot_recieved_d = 1;
         end else if (calc_pkg::isOpButton(active_button_i)) begin
-            new_input_d = 1;
+            new_number_d = 1;
             op_pending_d = 1;
 
             if (op_pending_q) begin
@@ -90,7 +90,7 @@ always_comb begin
 
             last_op_d = calc_pkg::button2op(active_button_i);
         end else if (calc_pkg::isEqButton(active_button_i)) begin
-            new_input_d = 1;
+            new_number_d = 1;
             op_pending_d = 0;
 
             display_wdata_o = alu_result_i;
@@ -106,13 +106,13 @@ end
 
 always_ff @(posedge clk_i) begin
     if (rst_i) begin
-        new_input_q <= 1;
+        new_number_q <= 1;
         display_counter_q <= '0;
         last_op_q <= calc_pkg::OP_ADD;
         dot_recieved_q <= 0;
         op_pending_q <= 0;
     end else begin
-        new_input_q <= new_input_d;
+        new_number_q <= new_number_d;
         display_counter_q <= display_counter_d;
         last_op_q <= last_op_d;
         dot_recieved_q <= dot_recieved_d;

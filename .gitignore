@@ -1,6 +1,13 @@
-build
+
+# Yosys + Synlig
+synth/build.v
 slpp_all
-.o
+*.log
+abc.history
+
+# Verilator
 obj_dir
+gls_dir
+sim_dir
 *.fst
 *.fst.hier

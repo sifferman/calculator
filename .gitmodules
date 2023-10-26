@@ -1,0 +1,4 @@
+[submodule "third_party/yosys"]
+	path = third_party/yosys
+	url = git@github.com:YosysHQ/yosys.git
+	shallow = true

@@ -1,4 +1,7 @@
 
+`ifndef __CALC_PKG_SV
+`define __CALC_PKG_SV
+
 package calc_pkg;
 
     typedef struct packed {
@@ -131,11 +134,11 @@ package calc_pkg;
 
     function automatic op_t button2op(active_button_t active_button);
         unique case (active_button)
-            calc_pkg::B_OP_DIV: return OP_DIV;
-            calc_pkg::B_OP_MUL: return OP_MUL;
-            calc_pkg::B_OP_SUB: return OP_SUB;
-            calc_pkg::B_OP_ADD: return OP_ADD;
-            default: return OP_NONE;
+            calc_pkg::B_OP_DIV: return calc_pkg::OP_DIV;
+            calc_pkg::B_OP_MUL: return calc_pkg::OP_MUL;
+            calc_pkg::B_OP_SUB: return calc_pkg::OP_SUB;
+            calc_pkg::B_OP_ADD: return calc_pkg::OP_ADD;
+            default: return calc_pkg::OP_NONE;
         endcase
     endfunction
 
@@ -182,3 +185,5 @@ package calc_pkg;
 
 
 endpackage
+
+`endif

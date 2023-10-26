@@ -20,7 +20,7 @@ calc_pkg::num_t alu_right;
 calc_pkg::op_t  alu_op;
 calc_pkg::num_t alu_result;
 
-register display (
+num_register display (
     .clk_i,
     .rst_i,
     .we_i(display_we),
@@ -48,7 +48,7 @@ controller controller (
     .alu_result_i(alu_result)
 );
 
-register upper (
+num_register upper (
     .clk_i,
     .rst_i,
     .we_i(upper_we),
@@ -115,14 +115,20 @@ test_t expected[$] = '{
     }
 };
 
-test_t recieved;
+
 
 initial begin
+    logic ERROR = 0;
+
     $dumpfile( "dump.fst" );
     $dumpvars;
     $display( "Begin simulation." );
 
-    foreach (expected[test_i]) begin
+    for (integer test_i = 0; test_i < expected.size(); test_i++) begin
+        logic [3:0] recieved_display[$] = '{ };
+        logic [3:0] recieved_upper[$] = '{ };
+        logic [3:0] recieved_alu[$] = '{ };
+
         new_input = 0;
         rst_i = 1;
         @(negedge clk_i);
@@ -130,42 +136,46 @@ initial begin
         rst_i = 0;
         new_input = 1;
 
-        recieved = '{
-            expected[test_i].size,
-            expected[test_i].in,
-            '{ },
-            '{ },
-            '{ }
-        };
-
         for (integer i = 0; i < expected[test_i].size; i++) begin
+            num_t recieved_display_num;
+            num_t recieved_upper_num;
+            num_t recieved_alu_num;
+
             active_button = expected[test_i].in[i];
             @(negedge clk_i);
-            recieved.display.push_back(controller.display_rdata_i.significand[7]);
-            if ((expected[test_i].display.size() != 0) && (recieved.display[i] != expected[test_i].display[i])) begin
-                $display("Error in display test %0d input %0d: e%0d != r%0d", test_i, i, expected[test_i].display[i], recieved.display[i]);
-                $display("display: %s", calc_pkg::num2string(controller.display_rdata_i));
-            end
-            recieved.upper.push_back(controller.upper_rdata_i.significand[7]);
-            if ((expected[test_i].upper.size() != 0) && (recieved.upper[i] != expected[test_i].upper[i])) begin
-                $display("Error in upper test %0d input %0d: e%0d != r%0d", test_i, i, expected[test_i].upper[i], recieved.upper[i]);
-                $display("upper: %s", calc_pkg::num2string(controller.upper_rdata_i));
-            end
-            recieved.alu.push_back(controller.alu_result_i.significand[7]);
-            if ((expected[test_i].alu.size() != 0) && (recieved.alu[i] != expected[test_i].alu[i])) begin
-                $display("Error in alu test %0d input %0d: e%0d != r%0d", test_i, i, expected[test_i].alu[i], recieved.alu[i]);
-                $display("alu: %s", calc_pkg::num2string(controller.alu_result_i));
-            end
+
+            recieved_display_num = num_t'(controller.display_rdata_i);
+            recieved_display.push_back(recieved_display_num.significand[7]);
+
+            recieved_upper_num = num_t'(controller.upper_rdata_i);
+            recieved_upper.push_back(recieved_upper_num.significand[7]);
+
+            recieved_alu_num = num_t'(controller.alu_result_i);
+            recieved_alu.push_back(recieved_alu_num.significand[7]);
         end
-        $display("recieved.display: %p", recieved.display);
+        $display("recieved_display: %p", recieved_display);
         $display("expected.display: %p", expected[test_i].display);
-        $display("recieved.upper: %p", recieved.upper);
+        if (recieved_display != expected[test_i].display) begin
+            $display("Mismatch"); ERROR = 1;
+        end
+        $display("recieved_upper: %p", recieved_upper);
         $display("expected.upper: %p", expected[test_i].upper);
-        $display("recieved.alu: %p", recieved.alu);
+        if (recieved_display != expected[test_i].display) begin
+            $display("Mismatch"); ERROR = 1;
+        end
+        $display("recieved_alu: %p", recieved_alu);
         $display("expected.alu: %p", expected[test_i].alu);
+        if (recieved_display != expected[test_i].display) begin
+            $display("Mismatch"); ERROR = 1;
+        end
         $display("");
     end
-    $finish();
+    if (ERROR) begin
+        $fatal();
+    end else begin
+        $display("All passed!");
+        $finish();
+    end
 end
 
 endmodule

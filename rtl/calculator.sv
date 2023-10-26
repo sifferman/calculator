@@ -5,7 +5,8 @@ module calculator #(
     input   logic                   clk_i,
     input   logic                   rst_i,
     input   calc_pkg::buttons_t     buttons_i,
-    output  logic [8*NumDigits-1:0] display_segments_o
+    output  logic [8*NumDigits-1:0] display_segments_o,
+    output  calc_pkg::num_t         display_o
 );
 
 calc_pkg::active_button_t   active_button;
@@ -14,6 +15,8 @@ logic                       new_input;
 logic           display_we;
 calc_pkg::num_t display_wdata;
 calc_pkg::num_t display_rdata;
+
+assign display_o = display_rdata;
 
 logic           upper_we;
 calc_pkg::num_t upper_wdata;
@@ -32,7 +35,7 @@ sanitize_buttons sanitize_buttons (
     .active_button_o(active_button)
 );
 
-register display (
+num_register display (
     .clk_i,
     .rst_i,
     .we_i(display_we),
@@ -60,7 +63,7 @@ controller controller (
     .alu_result_i(alu_result)
 );
 
-register upper (
+num_register upper (
     .clk_i,
     .rst_i,
     .we_i(upper_we),

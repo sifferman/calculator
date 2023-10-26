@@ -1,5 +1,5 @@
 
-module register (
+module num_register (
     input   logic           clk_i,
     input   logic           rst_i,
 
