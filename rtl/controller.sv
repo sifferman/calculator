@@ -20,52 +20,52 @@ module controller (
     input   calc_pkg::num_t             alu_result_i
 );
 
-logic new_number_d, new_number_q;
-logic [$clog2(calc_pkg::NumDigits):0] display_counter_d, display_counter_q;
-logic dot_recieved_d, dot_recieved_q;
-logic op_pending_d, op_pending_q;
 
-calc_pkg::op_t last_op_d, last_op_q;
+// Status Registers and Counters
+logic                                   dot_recieved_d, dot_recieved_q;
+logic                                   op_pending_d, op_pending_q;
+logic [$clog2(calc_pkg::NumDigits):0]   display_counter_d, display_counter_q;
+calc_pkg::op_t                          last_op_d, last_op_q;
+
+// Intermediate helpers
 logic [$clog2(calc_pkg::NumDigits):0] display_write_index;
+assign display_write_index = calc_pkg::NumDigits-1 - display_counter_q;
 
+logic new_number;
+assign new_number = (display_counter_q == 0);
+
+// ALU Interface
 assign alu_left_o = upper_rdata_i;
 assign alu_right_o = display_rdata_i;
 assign alu_op_o = last_op_q;
 
+// Control Logic
 always_comb begin
-    new_number_d = new_number_q;
     op_pending_d = op_pending_q;
     last_op_d = last_op_q;
 
-    if (new_number_q) begin
-        display_counter_d = '0;
-        dot_recieved_d = 0;
-    end else begin
-        display_counter_d = display_counter_q;
-        dot_recieved_d = dot_recieved_q;
-    end
+    display_counter_d = display_counter_q;
+    dot_recieved_d = dot_recieved_q;
 
     display_wdata_o = 'x;
     display_we_o = 0;
-    display_write_index = 'x;
 
     upper_wdata_o = 'x;
     upper_we_o = 0;
 
     if (new_input_i) begin
-        if (calc_pkg::isNumberButton(active_button_i) && (display_counter_q < calc_pkg::NumDigits)) begin
-            if ((new_number_q) && (active_button_i == calc_pkg::B_NUM_0))
-                new_number_d = 1;
-            else
-                new_number_d = 0;
-
-            if (new_number_q) begin
+        if (
+            calc_pkg::isNumberButton(active_button_i) // a number was pressed
+            && (display_counter_q < calc_pkg::NumDigits) // there is still space on the calculator
+            && !((new_number) && (active_button_i == calc_pkg::B_NUM_0)) // it was not a preceding zero
+        ) begin
+            if (new_number) begin
                 display_wdata_o = '0;
             end else begin
                 display_wdata_o = display_rdata_i;
-                display_wdata_o.exponent += 3'(!dot_recieved_q);
+                if (!dot_recieved_q)
+                    display_wdata_o.exponent++;
             end
-            display_write_index = calc_pkg::NumDigits-1 - display_counter_d;
             display_wdata_o.significand[display_write_index] = calc_pkg::button2bcd(active_button_i);
             display_we_o = 1;
             display_counter_d++;
@@ -75,13 +75,13 @@ always_comb begin
                 upper_we_o = 1;
             end
         end else if (calc_pkg::isDotButton(active_button_i)) begin
-            new_number_d = 0;
-            if (new_number_q)
+            if (new_number)
                 display_counter_d++;
             dot_recieved_d = 1;
         end else if (calc_pkg::isOpButton(active_button_i)) begin
-            new_number_d = 1;
             op_pending_d = 1;
+            display_counter_d = '0;
+            dot_recieved_d = 0;
 
             if (op_pending_q) begin
                 display_wdata_o = alu_result_i;
@@ -90,8 +90,9 @@ always_comb begin
 
             last_op_d = calc_pkg::button2op(active_button_i);
         end else if (calc_pkg::isEqButton(active_button_i)) begin
-            new_number_d = 1;
             op_pending_d = 0;
+            display_counter_d = '0;
+            dot_recieved_d = 0;
 
             display_wdata_o = alu_result_i;
             display_we_o = 1;
@@ -106,13 +107,11 @@ end
 
 always_ff @(posedge clk_i) begin
     if (rst_i) begin
-        new_number_q <= 1;
         display_counter_q <= '0;
         last_op_q <= calc_pkg::OP_ADD;
         dot_recieved_q <= 0;
         op_pending_q <= 0;
     end else begin
-        new_number_q <= new_number_d;
         display_counter_q <= display_counter_d;
         last_op_q <= last_op_d;
         dot_recieved_q <= dot_recieved_d;
