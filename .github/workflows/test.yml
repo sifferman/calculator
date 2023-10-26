@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install
+      - run: git submodule update --init --recursive
+      - name: Install Synlig and OSS CAD Suite
         run: |
           curl -sSL https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/install | bash -s -- tools --oss-cad-suite --synlig
           echo "$GITHUB_WORKSPACE/tools/oss-cad-suite/bin" >> $GITHUB_PATH

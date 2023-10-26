@@ -3,6 +3,8 @@ RTL := rtl/calc_pkg.sv rtl/alu.sv rtl/num_register.sv rtl/sanitize_buttons.sv rt
 
 .PHONY: gls sim lint clean
 
+all: clean sim gls
+
 lint:
 	verilator -f rtl/rtl.f --lint-only --top calculator
 
