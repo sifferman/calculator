@@ -15,5 +15,7 @@ jobs:
           curl -sSL https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/install | bash -s -- tools --oss-cad-suite --synlig
           echo "$GITHUB_WORKSPACE/tools/oss-cad-suite/bin" >> $GITHUB_PATH
           echo "$GITHUB_WORKSPACE/tools/synlig/bin" >> $GITHUB_PATH
-      - run: make sim
-      - run: make gls
+      - run: make sim TOP=controller_tb
+      - run: make gls TOP=controller_tb
+      - run: make sim TOP=alu_add_tb
+      - run: make gls TOP=alu_add_tb

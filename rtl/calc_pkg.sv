@@ -2,6 +2,8 @@
 `ifndef __CALC_PKG_SV
 `define __CALC_PKG_SV
 
+`define ABS(N) (($signed(N)<0)?(-(N)):((N)))
+
 package calc_pkg;
 
     typedef struct packed {
@@ -163,23 +165,15 @@ package calc_pkg;
     typedef struct packed {
         logic sign;
         logic error;
-        logic [$clog2(NumDigits)-1:0] exponent;
+        logic unsigned [$clog2(NumDigits)-1:0] exponent;
         logic [NumDigits-1:0][3:0] significand;
     } num_t;
 
-    function automatic string num2string(num_t num);
-        return $sformatf(
-            "%0d.%0d%0d%0d%0d%0d%0d%0d x 10^%0d",
-            num.significand[7],
-            num.significand[6],
-            num.significand[5],
-            num.significand[4],
-            num.significand[3],
-            num.significand[2],
-            num.significand[1],
-            num.significand[0],
-            num.exponent
-        );
+    function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
+        return {significand[NumDigits-2:0], bcd};
+    endfunction
+    function automatic logic [NumDigits-1:0][3:0] rightshift_significand(logic [3:0] bcd, logic [NumDigits-1:0][3:0] significand);
+        return {bcd, significand[NumDigits-1:1]};
     endfunction
 
 
