@@ -10,11 +10,19 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Install Synlig and OSS CAD Suite
+      - name: Download OSS
         run: |
-          curl -sSL https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/install | bash -s -- tools --oss-cad-suite --synlig
-          echo "$GITHUB_WORKSPACE/tools/oss-cad-suite/bin" >> $GITHUB_PATH
-          echo "$GITHUB_WORKSPACE/tools/synlig/bin" >> $GITHUB_PATH
+          curl -JOL https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2023-10-09/oss-cad-suite-linux-x64-20231009.tgz
+          tar -xzvf oss-cad-suite-linux-x64-20231009.tgz -C ./
+          rm -rf oss-cad-suite-linux-x64-20231009.tgz
+          echo "$GITHUB_WORKSPACE/oss-cad-suite/bin" >> $GITHUB_PATH
+      - name: Download Synling
+        run: |
+          curl -JOL https://github.com/chipsalliance/synlig/releases/download/2023-10-05-8935e3a/synlig-8935e3a-2023-10-05.tar.gz
+          mkdir -p synlig
+          tar -xzvf synlig-8935e3a-2023-10-05.tar.gz --strip-components=2 -C synlig
+          rm -rf synlig-8935e3a-2023-10-05.tar.gz
+          echo "$GITHUB_WORKSPACE/synlig/bin" >> $GITHUB_PATH
       - run: make sim TOP=controller_tb
       - run: make gls TOP=controller_tb
       - run: make sim TOP=alu_add_tb
