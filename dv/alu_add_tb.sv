@@ -110,7 +110,7 @@ integer num_tests = 0;
 always @(posedge clk_i) if (!rst_i) begin : monitor
     // wait until adder output is valid
     out_ready <= 1;
-    while (!out_valid)
+    while (!out_valid || !out_ready)
         @(posedge clk_i);
     out_ready <= 0;
 
