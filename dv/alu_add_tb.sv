@@ -1,5 +1,5 @@
 
-module alu_add_tb import dv_pkg::*;;
+module alu_add_tb;
 
 
 logic           clk_i;
@@ -29,7 +29,7 @@ alu_add dut (
 );
 
 real alu_add_result_q;
-always @* alu_add_result_q = num2real(dut.result_o);
+always @* alu_add_result_q = dv_pkg::num2real(dut.result_o);
 
 
 // Clock Generation
@@ -83,6 +83,8 @@ function automatic calc_pkg::num_t packet();
     end
     if (num.exponent != 0)
         num.significand[calc_pkg::NumDigits-1] = $urandom_range(1, 9);
+    if (num.significand == '0)
+        num.exponent = 0;
     return num;
 endfunction
 
@@ -122,7 +124,7 @@ end
 property sum_is_correct();
     @(negedge clk_i)
     (out_ready && out_valid) |->
-    (num_add(left, right) == result)
+    (alu_model_pkg::num_add(left, right) == result)
 endproperty
 
 integer tests_failed = 0;
@@ -130,10 +132,10 @@ assert property(sum_is_correct) else begin
     tests_failed <= tests_failed+1;
     $display(
         "%s + %s != %s : expected=%s : time=%t",
-        num2string(left),
-        num2string(right),
-        num2string(result),
-        num2string(num_add(left, right)),
+        dv_pkg::num2string(left),
+        dv_pkg::num2string(right),
+        dv_pkg::num2string(result),
+        dv_pkg::num2string(alu_model_pkg::num_add(left, right)),
         $time
     );
     $fatal();

@@ -2,6 +2,7 @@
 rtl/calc_pkg.sv
 dv/controller_tb.sv
 dv/dv_pkg.sv
+dv/model/alu_model_pkg.sv
 dv/alu_add_tb.sv
 
 --timing
