@@ -34,7 +34,7 @@ calc_pkg::num_t result_d, result_q;
 logic [3:0] result_extra_d, result_extra_q;
 logic carryborrow_d, carryborrow_q;
 
-assign result_o = result_q;
+assign result_o = out_valid_q ? result_q : '0;
 
 logic [4:0] nibble_sum;
 
@@ -85,7 +85,6 @@ always_comb begin
 
     case (state_q)
         S_IDLE: begin
-            out_valid_d = 0;
             result_d = '0;
             if (in_valid_i) begin
                 left_d = left_i;
@@ -141,8 +140,10 @@ always_comb begin
                 in_ready_d = 1;
                 if (result_d.significand == 0)
                     result_d.sign = 0;
-                if (out_ready_i) begin
+                if (out_valid_q && out_ready_i) begin
                     state_d = S_IDLE;
+                    out_valid_d = 0;
+                    result_d = '0;
                 end
             end
         end

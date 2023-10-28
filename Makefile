@@ -1,5 +1,5 @@
 
-RTL := rtl/calc_pkg.sv rtl/alu.sv rtl/num_register.sv rtl/sanitize_buttons.sv rtl/controller.sv rtl/calculator.sv rtl/alu/alu_add.sv rtl/rtl.f
+RTL := rtl/calc_pkg.sv rtl/alu/alu.sv rtl/num_register.sv rtl/sanitize_buttons.sv rtl/controller.sv rtl/calculator.sv rtl/alu/alu_add.sv rtl/rtl.f
 # TOP := controller_tb
 TOP := alu_add_tb
 

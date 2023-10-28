@@ -1,6 +1,6 @@
 
 rtl/calc_pkg.sv
-rtl/alu.sv
+rtl/alu/alu.sv
 rtl/num_register.sv
 rtl/sanitize_buttons.sv
 rtl/controller.sv

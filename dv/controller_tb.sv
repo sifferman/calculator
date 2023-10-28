@@ -18,7 +18,12 @@ calc_pkg::num_t upper_rdata;
 calc_pkg::num_t alu_left;
 calc_pkg::num_t alu_right;
 calc_pkg::op_t  alu_op;
+logic alu_in_ready;
+logic alu_in_valid;
+
 calc_pkg::num_t alu_result;
+logic alu_out_ready;
+logic alu_out_valid;
 
 num_register display (
     .clk_i,
@@ -45,7 +50,12 @@ controller controller (
     .alu_left_o(alu_left),
     .alu_right_o(alu_right),
     .alu_op_o(alu_op),
-    .alu_result_i(alu_result)
+    .alu_in_ready_i(alu_in_ready),
+    .alu_in_valid_o(alu_in_valid),
+
+    .alu_result_i(alu_result),
+    .alu_out_ready_o(alu_out_ready),
+    .alu_out_valid_i(alu_out_valid)
 );
 
 num_register upper (
@@ -62,7 +72,11 @@ alu alu (
     .left_i(alu_left),
     .right_i(alu_right),
     .op_i(alu_op),
-    .result_o(alu_result)
+    .in_ready_o(alu_in_ready),
+    .in_valid_i(alu_in_valid),
+    .result_o(alu_result),
+    .out_ready_i(alu_out_ready),
+    .out_valid_o(alu_out_valid)
 );
 
 initial begin
@@ -118,6 +132,14 @@ test_t expected[$] = '{
 
 
 initial begin
+    repeat(1000) @(posedge clk_i);
+    $display("Timed out");
+    $fatal;
+end
+
+
+
+initial begin
     logic ERROR = 0;
 
     $dumpfile( "dump.fst" );
@@ -134,15 +156,26 @@ initial begin
         @(negedge clk_i);
         @(negedge clk_i);
         rst_i = 0;
-        new_input = 1;
+        new_input = 0;
 
         for (integer i = 0; i < expected[test_i].size; i++) begin
             num_t recieved_display_num;
             num_t recieved_upper_num;
             num_t recieved_alu_num;
 
+            // wait for alu to be ready
+            while (controller.state_q != 0)
+                @(negedge clk_i);
+
+            // send new input
             active_button = expected[test_i].in[i];
+            new_input = 1;
             @(negedge clk_i);
+            new_input = 0;
+
+            // wait for operation to finish
+            while (controller.state_q != 0)
+                @(negedge clk_i);
 
             recieved_display_num = num_t'(controller.display_rdata_i);
             recieved_display.push_back(recieved_display_num.significand[7]);

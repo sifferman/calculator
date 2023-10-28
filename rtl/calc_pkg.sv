@@ -169,6 +169,11 @@ package calc_pkg;
         logic [NumDigits-1:0][3:0] significand;
     } num_t;
 
+    function automatic num_t neg(num_t num);
+        num.sign ^= 1;
+        return num;
+    endfunction
+
     function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
         return {significand[NumDigits-2:0], bcd};
     endfunction
