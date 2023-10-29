@@ -1,5 +1,7 @@
 
-module alu (
+module alu #(
+    localparam USE_ALU_MODEL = 1'b0
+) (
     input   logic           clk_i,
     input   logic           rst_i,
 
@@ -73,8 +75,8 @@ assign out_valid_o = add_out_valid;
 
 always_comb begin
     add_in_valid = 0;
-    mult_in_valid = 0;
-    div_in_valid = 0;
+    // mult_in_valid = 0;
+    // div_in_valid = 0;
     state_d = state_q;
     case (state_q)
         S_IDLE: begin

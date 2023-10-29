@@ -3,6 +3,7 @@
 `define __ALU_MODEL_PKG_SV
 
 package alu_model_pkg;
+    `ifndef SYNTHESIS
 
     // Intermediate representation of calc_pkg::num_t
     typedef struct packed {
@@ -36,7 +37,7 @@ package alu_model_pkg;
         num.exponent = nobcd.exponent;
         num.error = nobcd.error;
         for (integer i = 0; i < calc_pkg::NumDigits; i++) begin
-            num.significand[i] = (nobcd.significand%10);
+            num.significand[i] = 4'(nobcd.significand%10);
             nobcd.significand /= 10;
         end
         return num;
@@ -81,6 +82,7 @@ package alu_model_pkg;
         return num_add(left, right);
     endfunction
 
+    `endif
 endpackage
 
 `endif
