@@ -90,9 +90,9 @@ end
 typedef struct {
     int size;
     calc_pkg::active_button_t in[$];
-    logic [3:0] display[$];
-    logic [3:0] upper[$];
-    logic [3:0] alu[$];
+    calc_pkg::bcd_t display[$];
+    calc_pkg::bcd_t upper[$];
+    calc_pkg::bcd_t alu[$];
 } test_t;
 
 test_t expected[$] = '{
@@ -147,9 +147,9 @@ initial begin
     $display( "Begin simulation." );
 
     for (integer test_i = 0; test_i < expected.size(); test_i++) begin
-        logic [3:0] recieved_display[$] = '{ };
-        logic [3:0] recieved_upper[$] = '{ };
-        logic [3:0] recieved_alu[$] = '{ };
+        calc_pkg::bcd_t recieved_display[$] = '{ };
+        calc_pkg::bcd_t recieved_upper[$] = '{ };
+        calc_pkg::bcd_t recieved_alu[$] = '{ };
 
         new_input = 0;
         rst_i = 1;

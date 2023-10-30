@@ -31,7 +31,7 @@ assign in_ready_o = in_ready_q;
 calc_pkg::num_t left_d, left_q;
 calc_pkg::num_t right_d, right_q;
 calc_pkg::num_t result_d, result_q;
-logic [3:0] result_extra_d, result_extra_q;
+calc_pkg::bcd_t result_extra_d, result_extra_q;
 logic carryborrow_d, carryborrow_q;
 
 assign result_o = out_valid_q ? result_q : '0;

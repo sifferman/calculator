@@ -37,7 +37,7 @@ package alu_model_pkg;
         num.exponent = nobcd.exponent;
         num.error = nobcd.error;
         for (integer i = 0; i < calc_pkg::NumDigits; i++) begin
-            num.significand[i] = 4'(nobcd.significand%10);
+            num.significand[i] = calc_pkg::bcd_t'(nobcd.significand%10);
             nobcd.significand /= 10;
         end
         return num;

@@ -64,7 +64,7 @@ package calc_pkg;
         B_UNKNOWN
     } active_button_t;
 
-    function automatic logic isNumberButton(active_button_t active_button);
+    function automatic logic isNumberButton(calc_pkg::active_button_t active_button);
         return active_button inside {
             B_NUM_1,
             B_NUM_2,
@@ -79,7 +79,7 @@ package calc_pkg;
         };
     endfunction
 
-    function automatic logic isOpButton(active_button_t active_button);
+    function automatic logic isOpButton(calc_pkg::active_button_t active_button);
         return active_button inside {
             B_OP_DIV,
             B_OP_MUL,
@@ -88,13 +88,15 @@ package calc_pkg;
         };
     endfunction
 
-    function automatic logic isEqButton(active_button_t active_button);
+    function automatic logic isEqButton(calc_pkg::active_button_t active_button);
         return (active_button == B_OP_EQ);
     endfunction
 
-    function automatic logic isDotButton(active_button_t active_button);
+    function automatic logic isDotButton(calc_pkg::active_button_t active_button);
         return (active_button == B_DOT);
     endfunction
+
+    typedef logic [3:0] bcd_t;
 
 /*
 
@@ -105,7 +107,7 @@ package calc_pkg;
   3      -           -     -           -     -           -     -
 
 */
-    function automatic logic [6:0] bcd2segments(logic [3:0] bcd);
+    function automatic logic [6:0] bcd2segments(calc_pkg::bcd_t bcd);
         logic [6:0] segments = 7'b1111011;
         unique case (bcd)
             4'd0: segments = 7'b1111110;
@@ -134,7 +136,7 @@ package calc_pkg;
         OP_DIV
     } op_t;
 
-    function automatic op_t button2op(active_button_t active_button);
+    function automatic calc_pkg::op_t button2op(calc_pkg::active_button_t active_button);
         unique case (active_button)
             calc_pkg::B_OP_DIV: return calc_pkg::OP_DIV;
             calc_pkg::B_OP_MUL: return calc_pkg::OP_MUL;
@@ -144,7 +146,7 @@ package calc_pkg;
         endcase
     endfunction
 
-    function automatic logic [3:0] button2bcd(active_button_t active_button);
+    function automatic calc_pkg::bcd_t button2bcd(calc_pkg::active_button_t active_button);
         unique case (active_button)
             calc_pkg::B_NUM_1: return 1;
             calc_pkg::B_NUM_2: return 2;
@@ -165,8 +167,8 @@ package calc_pkg;
     typedef struct packed {
         logic sign;
         logic error;
-        logic unsigned [$clog2(NumDigits)-1:0] exponent;
-        logic [NumDigits-1:0][3:0] significand;
+        logic unsigned [$clog2(calc_pkg::NumDigits)-1:0] exponent;
+        calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] significand;
     } num_t;
 
     function automatic num_t neg(num_t num);
@@ -174,11 +176,11 @@ package calc_pkg;
         return num;
     endfunction
 
-    function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
-        return {significand[NumDigits-2:0], bcd};
+    function automatic calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] leftshift_significand(calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] significand, calc_pkg::bcd_t bcd);
+        return {significand[calc_pkg::NumDigits-2:0], bcd};
     endfunction
-    function automatic logic [NumDigits-1:0][3:0] rightshift_significand(logic [3:0] bcd, logic [NumDigits-1:0][3:0] significand);
-        return {bcd, significand[NumDigits-1:1]};
+    function automatic calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] rightshift_significand(calc_pkg::bcd_t bcd, calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] significand);
+        return {bcd, significand[calc_pkg::NumDigits-1:1]};
     endfunction
 
 
