@@ -2,6 +2,8 @@
 `ifndef __CALC_PKG_SV
 `define __CALC_PKG_SV
 
+`define ABS(N) (($signed(N)<0)?(-(N)):((N)))
+
 package calc_pkg;
 
     typedef struct packed {
@@ -62,7 +64,7 @@ package calc_pkg;
         B_UNKNOWN
     } active_button_t;
 
-    function automatic logic isNumberButton(active_button_t active_button);
+    function automatic logic isNumberButton(calc_pkg::active_button_t active_button);
         return active_button inside {
             B_NUM_1,
             B_NUM_2,
@@ -77,7 +79,7 @@ package calc_pkg;
         };
     endfunction
 
-    function automatic logic isOpButton(active_button_t active_button);
+    function automatic logic isOpButton(calc_pkg::active_button_t active_button);
         return active_button inside {
             B_OP_DIV,
             B_OP_MUL,
@@ -86,13 +88,15 @@ package calc_pkg;
         };
     endfunction
 
-    function automatic logic isEqButton(active_button_t active_button);
+    function automatic logic isEqButton(calc_pkg::active_button_t active_button);
         return (active_button == B_OP_EQ);
     endfunction
 
-    function automatic logic isDotButton(active_button_t active_button);
+    function automatic logic isDotButton(calc_pkg::active_button_t active_button);
         return (active_button == B_DOT);
     endfunction
+
+    typedef logic [3:0] bcd_t;
 
 /*
 
@@ -104,21 +108,19 @@ package calc_pkg;
 
 */
     function automatic logic [6:0] bcd2segments(logic [3:0] bcd);
-        logic [6:0] segments = 7'b1111011;
         unique case (bcd)
-            4'd0: segments = 7'b1111110;
-            4'd1: segments = 7'b0110000;
-            4'd2: segments = 7'b1101101;
-            4'd3: segments = 7'b1111001;
-            4'd4: segments = 7'b0110011;
-            4'd5: segments = 7'b1011011;
-            4'd6: segments = 7'b1011111;
-            4'd7: segments = 7'b1110000;
-            4'd8: segments = 7'b1111111;
-            4'd9: segments = 7'b1111011;
-            default: segments = 7'b1111011;
+            4'd0: return 7'b1111110;
+            4'd1: return 7'b0110000;
+            4'd2: return 7'b1101101;
+            4'd3: return 7'b1111001;
+            4'd4: return 7'b0110011;
+            4'd5: return 7'b1011011;
+            4'd6: return 7'b1011111;
+            4'd7: return 7'b1110000;
+            4'd8: return 7'b1111111;
+            4'd9: return 7'b1111011;
+            default: return 7'b1111011;
         endcase
-        return segments;
     endfunction
 
 
@@ -132,7 +134,7 @@ package calc_pkg;
         OP_DIV
     } op_t;
 
-    function automatic op_t button2op(active_button_t active_button);
+    function automatic calc_pkg::op_t button2op(calc_pkg::active_button_t active_button);
         unique case (active_button)
             calc_pkg::B_OP_DIV: return calc_pkg::OP_DIV;
             calc_pkg::B_OP_MUL: return calc_pkg::OP_MUL;
@@ -142,7 +144,7 @@ package calc_pkg;
         endcase
     endfunction
 
-    function automatic logic [3:0] button2bcd(active_button_t active_button);
+    function automatic calc_pkg::bcd_t button2bcd(calc_pkg::active_button_t active_button);
         unique case (active_button)
             calc_pkg::B_NUM_1: return 1;
             calc_pkg::B_NUM_2: return 2;
@@ -163,23 +165,20 @@ package calc_pkg;
     typedef struct packed {
         logic sign;
         logic error;
-        logic [$clog2(NumDigits)-1:0] exponent;
+        logic unsigned [$clog2(NumDigits)-1:0] exponent;
         logic [NumDigits-1:0][3:0] significand;
     } num_t;
 
-    function automatic string num2string(num_t num);
-        return $sformatf(
-            "%0d.%0d%0d%0d%0d%0d%0d%0d x 10^%0d",
-            num.significand[7],
-            num.significand[6],
-            num.significand[5],
-            num.significand[4],
-            num.significand[3],
-            num.significand[2],
-            num.significand[1],
-            num.significand[0],
-            num.exponent
-        );
+    function automatic num_t neg(num_t num);
+        num.sign ^= 1;
+        return num;
+    endfunction
+
+    function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
+        return {significand[NumDigits-2:0], bcd};
+    endfunction
+    function automatic logic [NumDigits-1:0][3:0] rightshift_significand(logic [3:0] bcd, logic [NumDigits-1:0][3:0] significand);
+        return {bcd, significand[NumDigits-1:1]};
     endfunction
 
 

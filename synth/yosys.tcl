@@ -3,14 +3,16 @@ yosys -import
 plugin -i systemverilog
 yosys -import
 
-read_systemverilog -noinfo -nonote \
-rtl/calc_pkg.sv \
-rtl/alu.sv \
-rtl/calculator.sv \
-rtl/num_register.sv \
-rtl/sanitize_buttons.sv \
-rtl/controller.sv
+# Get file list from "rtl/rtl.f"
+set f [open rtl/rtl.f r]
+set contents [read $f]
+close $f
+set RTL [regexp -all -inline {\S+} $contents]
 
-synth -top calculator
-# synth_xilinx -top calculator
-write_verilog -noexpr -noattr -simple-lhs synth/build.v
+read_systemverilog -noinfo -nonote {*}$RTL
+
+prep
+opt
+stat
+write_verilog -noexpr -noattr -simple-lhs synth/build/synth.v
+write_json synth/build/synth.json
