@@ -1,6 +1,6 @@
 
 # Yosys + Synlig
-build.v
+synth/build
 slpp_all
 *.log
 abc.history

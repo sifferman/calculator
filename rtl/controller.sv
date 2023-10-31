@@ -4,7 +4,9 @@ module controller (
     input   logic                       rst_i,
     input   calc_pkg::active_button_t   active_button_i,
     input   logic                       new_input_i,
-    // display counter
+
+    output  logic                       override_shift_amount_o,
+    output  logic [2:0]                 new_shift_amount_o,
 
     output  logic                       display_we_o,
     output  calc_pkg::num_t             display_wdata_o,
@@ -57,6 +59,10 @@ typedef enum logic [1:0] {
 } state_t;
 
 state_t state_d, state_q;
+
+// Display logic
+assign override_shift_amount_o = (!new_number);
+assign new_shift_amount_o = (calc_pkg::NumDigits - display_counter_q);
 
 // Control Logic
 always_comb begin

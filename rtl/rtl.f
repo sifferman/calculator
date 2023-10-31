@@ -6,4 +6,5 @@ rtl/num_register.sv
 rtl/sanitize_buttons.sv
 rtl/controller.sv
 rtl/alu/alu_add.sv
+rtl/screen_driver.sv
 rtl/calculator.sv

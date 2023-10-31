@@ -42,53 +42,6 @@ initial begin
 end
 
 
-// randomizer
-// class packet;
-//     rand calc_pkg::num_t num;
-//     constraint c_error {
-//         num.error == 0;
-//     }
-//     constraint c_exponent { num.exponent inside {
-//         0, 0, 0, 0, 0, 0, 0, 0,
-//         1, 2, 3, 4, 5, 6, 7, 8,
-//         9, 9, 9, 9, 9, 9, 9, 9
-//     }; }
-//     constraint c_subnormal {
-//         if (num.exponent == 0)
-//             num.significand[calc_pkg::NumDigits-1] != 0;
-//     }
-//     constraint c_significand {
-//         foreach (num.significand[i])
-//             num.significand[i] inside {
-//                 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//                 1, 2, 3, 4, 5, 6, 7, 8, 9
-//             };
-//     }
-// endclass
-function automatic calc_pkg::num_t packet();
-    calc_pkg::num_t num;
-    num.sign = $urandom_range(0,1);
-    num.error = 0;
-    case ($urandom_range(0,3))
-        0: num.exponent = 0;
-        1: num.exponent = 0;
-        2: num.exponent = $urandom_range(1,6);
-        3: num.exponent = 7;
-    endcase
-    for (integer j = 0; j < calc_pkg::NumDigits; j++) begin
-        case ($urandom_range(0,1))
-            0: num.significand[j] = 0;
-            1: num.significand[j] = $urandom_range(1, 9);
-        endcase
-    end
-    if (num.exponent != 0)
-        num.significand[calc_pkg::NumDigits-1] = $urandom_range(1, 9);
-    if (num.significand == '0)
-        num.exponent = 0;
-    return num;
-endfunction
-
-
 // driver
 always @(posedge clk_i) if (!rst_i) begin : driver
     // wait until adder is ready for input
@@ -97,8 +50,8 @@ always @(posedge clk_i) if (!rst_i) begin : driver
         @(posedge clk_i);
 
     // generate random input
-    left <= packet();
-    right <= packet();
+    left <= dv_pkg::random_num();
+    right <= dv_pkg::random_num();
 
     // send data
     in_valid <= 1;

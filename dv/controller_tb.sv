@@ -7,6 +7,11 @@ logic                       rst_i;
 calc_pkg::active_button_t   active_button = calc_pkg::B_NONE;
 logic                       new_input = 0;
 
+logic           override_shift_amount;
+logic [2:0]     new_shift_amount;
+logic [calc_pkg::NumDigits-1:0][7:0] display_segments;
+
+
 logic           display_we;
 calc_pkg::num_t display_wdata;
 calc_pkg::num_t display_rdata;
@@ -38,6 +43,9 @@ controller controller (
     .rst_i,
     .active_button_i(active_button),
     .new_input_i(new_input),
+
+    .override_shift_amount_o(override_shift_amount),
+    .new_shift_amount_o(new_shift_amount),
 
     .display_we_o(display_we),
     .display_wdata_o(display_wdata),
@@ -77,6 +85,13 @@ alu alu (
     .result_o(alu_result),
     .out_ready_i(alu_out_ready),
     .out_valid_o(alu_out_valid)
+);
+
+screen_driver screen_driver (
+    .num_i(display_rdata),
+    .override_shift_amount_i(override_shift_amount),
+    .new_shift_amount_i(new_shift_amount),
+    .display_segments_o(display_segments)
 );
 
 initial begin
@@ -185,6 +200,8 @@ initial begin
 
             recieved_alu_num = num_t'(controller.alu_result_i);
             recieved_alu.push_back(recieved_alu_num.significand[7]);
+
+            dv_pkg::print_segments(display_segments);
         end
         $display("recieved_display: %p", recieved_display);
         $display("expected.display: %p", expected[test_i].display);

@@ -94,4 +94,11 @@ alu alu (
     .out_valid_o(alu_out_valid)
 );
 
+screen_driver screen_driver (
+    .num_i(display_rdata),
+    .override_shift_amount_i(0),
+    .new_shift_amount_i('x),
+    .display_segments_o(display_segments_o)
+);
+
 endmodule

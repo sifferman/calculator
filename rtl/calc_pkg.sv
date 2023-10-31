@@ -107,22 +107,20 @@ package calc_pkg;
   3      -           -     -           -     -           -     -
 
 */
-    function automatic logic [6:0] bcd2segments(calc_pkg::bcd_t bcd);
-        logic [6:0] segments = 7'b1111011;
+    function automatic logic [6:0] bcd2segments(logic [3:0] bcd);
         unique case (bcd)
-            4'd0: segments = 7'b1111110;
-            4'd1: segments = 7'b0110000;
-            4'd2: segments = 7'b1101101;
-            4'd3: segments = 7'b1111001;
-            4'd4: segments = 7'b0110011;
-            4'd5: segments = 7'b1011011;
-            4'd6: segments = 7'b1011111;
-            4'd7: segments = 7'b1110000;
-            4'd8: segments = 7'b1111111;
-            4'd9: segments = 7'b1111011;
-            default: segments = 7'b1111011;
+            4'd0: return 7'b1111110;
+            4'd1: return 7'b0110000;
+            4'd2: return 7'b1101101;
+            4'd3: return 7'b1111001;
+            4'd4: return 7'b0110011;
+            4'd5: return 7'b1011011;
+            4'd6: return 7'b1011111;
+            4'd7: return 7'b1110000;
+            4'd8: return 7'b1111111;
+            4'd9: return 7'b1111011;
+            default: return 7'b1111011;
         endcase
-        return segments;
     endfunction
 
 
@@ -167,8 +165,8 @@ package calc_pkg;
     typedef struct packed {
         logic sign;
         logic error;
-        logic unsigned [$clog2(calc_pkg::NumDigits)-1:0] exponent;
-        calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] significand;
+        logic unsigned [$clog2(NumDigits)-1:0] exponent;
+        logic [NumDigits-1:0][3:0] significand;
     } num_t;
 
     function automatic num_t neg(num_t num);
@@ -176,11 +174,11 @@ package calc_pkg;
         return num;
     endfunction
 
-    function automatic calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] leftshift_significand(calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] significand, calc_pkg::bcd_t bcd);
-        return {significand[calc_pkg::NumDigits-2:0], bcd};
+    function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
+        return {significand[NumDigits-2:0], bcd};
     endfunction
-    function automatic calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] rightshift_significand(calc_pkg::bcd_t bcd, calc_pkg::bcd_t [calc_pkg::NumDigits-1:0] significand);
-        return {bcd, significand[calc_pkg::NumDigits-1:1]};
+    function automatic logic [NumDigits-1:0][3:0] rightshift_significand(logic [3:0] bcd, logic [NumDigits-1:0][3:0] significand);
+        return {bcd, significand[NumDigits-1:1]};
     endfunction
 
 
