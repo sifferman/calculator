@@ -24,6 +24,9 @@ synth synth/build/synth.json synth/build/synth.v: ${RTL} synth/yosys.tcl
 	mkdir -p synth/build
 	yosys -p 'tcl synth/yosys.tcl ${RTL}' -l synth/build/yosys.log
 
+synth/build/xc7.edif: synth/build/synth.json
+	yosys -c synth/nexys_a7/nexys_a7.tcl -l synth/build/xc7.log
+
 clean:
 	rm -rf \
 	 synth/build slpp_all abc.history \
