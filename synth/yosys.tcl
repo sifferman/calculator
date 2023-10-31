@@ -3,15 +3,13 @@ yosys -import
 plugin -i systemverilog
 yosys -import
 
-read_systemverilog -noinfo -nonote \
-rtl/calc_pkg.sv \
-rtl/alu/alu_add.sv \
-rtl/alu/alu.sv \
-rtl/calculator.sv \
-rtl/num_register.sv \
-rtl/sanitize_buttons.sv \
-rtl/screen_driver.sv \
-rtl/controller.sv
+# Get file list from "rtl/rtl.f"
+set f [open rtl/rtl.f r]
+set contents [read $f]
+close $f
+set RTL [regexp -all -inline {\S+} $contents]
+
+read_systemverilog -noinfo -nonote {*}$RTL
 
 prep
 opt

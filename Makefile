@@ -1,5 +1,5 @@
 
-RTL := rtl/calc_pkg.sv rtl/alu/alu.sv rtl/num_register.sv rtl/sanitize_buttons.sv rtl/controller.sv rtl/calculator.sv rtl/alu/alu_add.sv rtl/rtl.f
+RTL := $(shell cat rtl/rtl.f)
 # TOP := controller_tb
 # TOP := screen_driver_tb
 TOP := alu_add_tb
@@ -22,7 +22,7 @@ gls: synth/build/synth.v
 synth synth/build/synth.json synth/build/synth.v: ${RTL} synth/yosys.tcl
 	rm -rf slpp_all
 	mkdir -p synth/build
-	yosys -c synth/yosys.tcl -l synth/build/yosys.log
+	yosys -p 'tcl synth/yosys.tcl ${RTL}' -l synth/build/yosys.log
 
 clean:
 	rm -rf \
