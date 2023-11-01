@@ -66,19 +66,18 @@ end
 
 // generate clock
 logic clk1khz;
-clk_divider #(
-    .IN_FREQ(100000),
-    .OUT_FREQ(1)
-) clk_divider (
+clk_divider clk_divider (
     .clk_i(clk100mhz_i),
     .rst_i(0),
     .clk_o(clk1khz)
 );
 
 // design
+logic rst;
+assign rst = !rst_ni;
 calculator calculator (
     .clk_i(clk1khz),
-    .rst_i(!rst_ni),
+    .rst_i(rst),
     .buttons_i(buttons),
     .segments_cathode_o(segments_cathode_o),
     .segments_anode_o(segments_anode_o)

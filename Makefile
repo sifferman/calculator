@@ -25,10 +25,14 @@ synth synth/build/synth.json synth/build/synth.v: ${RTL} synth/yosys.tcl
 	mkdir -p synth/build
 	yosys -p 'tcl synth/yosys.tcl ${RTL}' -l synth/build/yosys.log
 
-synth/build/nexys_4_ddr.edif: ${RTL} synth/nexys_4_ddr/nexys_4_ddr.sv synth/nexys_4_ddr/yosys.tcl
+synth/build/nexys_4_ddr.edif synth/build/nexys_4_ddr.v: ${RTL} synth/nexys_4_ddr/nexys_4_ddr.sv synth/nexys_4_ddr/yosys.tcl
 	rm -rf slpp_all
 	mkdir -p synth/build
 	yosys -c synth/nexys_4_ddr/yosys.tcl -l synth/build/nexys_4_ddr.log
+
+nexys_4_ddr_gls: synth/build/nexys_4_ddr.v
+	verilator --Mdir $@_dir -f synth/nexys_4_ddr/nexys_4_ddr.f -f dv/dv.f --binary --top nexys_4_ddr_tb
+	./$@_dir/Vnexys_4_ddr_tb +verilator+rand+reset+2
 
 nexys_4_ddr: synth/build/nexys_4_ddr.edif
 	rm -rf synth/build/nexys_4_ddr
