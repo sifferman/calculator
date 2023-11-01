@@ -1,5 +1,6 @@
 
 RTL := $(shell cat rtl/rtl.f)
+# TOP := calculator_tb
 # TOP := controller_tb
 # TOP := screen_driver_tb
 TOP := alu_add_tb

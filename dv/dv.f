@@ -3,6 +3,7 @@ rtl/calc_pkg.sv
 dv/dv_pkg.sv
 dv/model/alu_model_pkg.sv
 
+dv/calculator_tb.sv
 dv/controller_tb.sv
 dv/alu_add_tb.sv
 dv/screen_driver_tb.sv

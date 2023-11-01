@@ -65,7 +65,7 @@ package dv_pkg;
         string row5 = "";
         integer i = 0;
         integer s;
-        for (integer i = 0; i < calc_pkg::NumDigits; i++) begin
+        for (i = 0; i < calc_pkg::NumDigits; i++) begin
             s = calc_pkg::NumDigits-1-i;
             row1 = {row1, $sformatf(" %s    ",  (segments[s][6] ? "-" : " "))};
             row2 = {row2, $sformatf("%s %s   ", (segments[s][1] ? "|" : " "), (segments[s][5] ? "|" : " "))};
