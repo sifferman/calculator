@@ -33,7 +33,7 @@ always_comb begin
     buttons.op_div = switches_i[15];
 end
 
-// display currently active operation
+// DEBUG: display currently active operation
 always_comb begin
     led_o = '0;
     priority case (1)
@@ -64,48 +64,24 @@ always_comb begin
     endcase
 end
 
+// generate clock
 logic clk1khz;
 clk_divider #(
     .IN_FREQ(100000),
     .OUT_FREQ(1)
 ) clk_divider (
     .clk_i(clk100mhz_i),
-    .rst(0),
+    .rst_i(0),
     .clk_o(clk1khz)
 );
 
-logic [calc_pkg::NumDigits-1:0][7:0] display_segments_o;
-
+// design
 calculator calculator (
     .clk_i(clk1khz),
     .rst_i(!rst_ni),
     .buttons_i(buttons),
-    .display_segments_o(display_segments_o)
+    .segments_cathode_o(segments_cathode_o),
+    .segments_anode_o(segments_anode_o)
 );
-
-logic [2:0] segments_counter_d, segments_counter_q;
-logic [7:0] segments_anode_d, segments_anode_q;
-
-assign segments_cathode_o = ~display_segments_o[segments_counter_q];
-assign segments_anode_o = segments_anode_q;
-
-always_comb begin
-    segments_anode_d = {segments_anode_q[6:0], segments_anode_q[7]};
-
-    segments_counter_d = (segments_counter_q + 1);
-    if (segments_counter_d == calc_pkg::NumDigits)
-        segments_counter_d = 0;
-end
-
-
-always_ff @(posedge clk1khz) begin
-    if (!rst_ni) begin
-        segments_counter_q <= 0;
-        segments_anode_q <= 8'b11111110;
-    end else begin
-        segments_counter_q <= segments_counter_d;
-        segments_anode_q <= segments_anode_d;
-    end
-end
 
 endmodule

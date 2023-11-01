@@ -98,6 +98,8 @@ alu alu (
 );
 
 screen_driver screen_driver (
+    .clk_i,
+    .rst_i,
     .num_i(display_rdata),
     .override_shift_amount_i(override_shift_amount),
     .new_shift_amount_i(new_shift_amount),

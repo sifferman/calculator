@@ -5,7 +5,7 @@ module clk_divider #(
     parameter int OUT_FREQ = 1
 ) (
     input   logic   clk_i,
-    input   logic   rst,
+    input   logic   rst_i,
     output  logic   clk_o
 );
 
@@ -25,7 +25,7 @@ module clk_divider #(
         initial counter_q = '0;
 
         always_ff @(posedge clk_i) begin
-            if (rst) begin
+            if (rst_i) begin
                 counter_q <= '0;
             end else begin
                 counter_q <= counter_d;
