@@ -63,7 +63,7 @@ end
 always_ff @(posedge clk_i) begin
     if (rst_i) begin
         segments_counter_q <= 0;
-        segments_anode_q <= ~(1<<(calc_pkg::NumDigits-1));
+        segments_anode_q <= ~1;
     end else begin
         segments_counter_q <= segments_counter_d;
         segments_anode_q <= segments_anode_d;

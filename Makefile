@@ -5,7 +5,7 @@ RTL := $(shell cat rtl/rtl.f)
 # TOP := screen_driver_tb
 TOP := alu_add_tb
 
-.PHONY: lint sim synth gls clean
+.PHONY: lint sim synth gls nexys_4_ddr_gls clean
 
 all: clean sim gls
 
