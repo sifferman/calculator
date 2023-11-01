@@ -1,16 +1,17 @@
 
-module calculator #(
-    NumDigits = 8
-) (
-    input   logic                   clk_i,
-    input   logic                   rst_i,
-    input   calc_pkg::buttons_t     buttons_i,
-    output  logic [8*NumDigits-1:0] display_segments_o,
-    output  calc_pkg::num_t         display_o
+module calculator (
+    input   logic                                   clk_i,
+    input   logic                                   rst_i,
+    input   calc_pkg::buttons_t                     buttons_i,
+    output  logic [calc_pkg::NumDigits-1:0][7:0]    display_segments_o,
+    output  calc_pkg::num_t                         display_o
 );
 
 calc_pkg::active_button_t   active_button;
 logic                       new_input;
+
+logic           override_shift_amount;
+logic [2:0]     new_shift_amount;
 
 logic           display_we;
 calc_pkg::num_t display_wdata;
@@ -54,6 +55,9 @@ controller controller (
     .active_button_i(active_button),
     .new_input_i(new_input),
 
+    .override_shift_amount_o(override_shift_amount),
+    .new_shift_amount_o(new_shift_amount),
+
     .display_we_o(display_we),
     .display_wdata_o(display_wdata),
     .display_rdata_i(display_rdata),
@@ -96,8 +100,8 @@ alu alu (
 
 screen_driver screen_driver (
     .num_i(display_rdata),
-    .override_shift_amount_i(0),
-    .new_shift_amount_i('x),
+    .override_shift_amount_i(override_shift_amount),
+    .new_shift_amount_i(new_shift_amount),
     .display_segments_o(display_segments_o)
 );
 

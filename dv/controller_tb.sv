@@ -4,8 +4,10 @@ module controller_tb import calc_pkg::*;;
 logic                       clk_i;
 logic                       rst_i;
 
-calc_pkg::active_button_t   active_button = calc_pkg::B_NONE;
-logic                       new_input = 0;
+calc_pkg::active_button_t   active_button;
+logic                       new_input;
+
+calc_pkg::buttons_t         buttons = '0;
 
 logic           override_shift_amount;
 logic [2:0]     new_shift_amount;
@@ -29,6 +31,14 @@ logic alu_in_valid;
 calc_pkg::num_t alu_result;
 logic alu_out_ready;
 logic alu_out_valid;
+
+sanitize_buttons sanitize_buttons (
+    .clk_i,
+    .rst_i,
+    .buttons_i(buttons),
+    .new_input_o(new_input),
+    .active_button_o(active_button)
+);
 
 num_register display (
     .clk_i,
@@ -183,10 +193,11 @@ initial begin
                 @(negedge clk_i);
 
             // send new input
-            active_button = expected[test_i].in[i];
-            new_input = 1;
+            buttons = dv_pkg::button2buttons(calc_pkg::B_NONE);
             @(negedge clk_i);
-            new_input = 0;
+            buttons = dv_pkg::button2buttons(expected[test_i].in[i]);
+            @(negedge clk_i);
+            @(negedge clk_i);
 
             // wait for operation to finish
             while (controller.state_q != 0)

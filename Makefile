@@ -24,8 +24,14 @@ synth synth/build/synth.json synth/build/synth.v: ${RTL} synth/yosys.tcl
 	mkdir -p synth/build
 	yosys -p 'tcl synth/yosys.tcl ${RTL}' -l synth/build/yosys.log
 
-synth/build/xc7.edif: synth/build/synth.json
-	yosys -c synth/nexys_a7/nexys_a7.tcl -l synth/build/xc7.log
+synth/build/nexys_4_ddr.edif: ${RTL} synth/nexys_4_ddr/nexys_4_ddr.sv synth/nexys_4_ddr/yosys.tcl
+	rm -rf slpp_all
+	mkdir -p synth/build
+	yosys -c synth/nexys_4_ddr/yosys.tcl -l synth/build/nexys_4_ddr.log
+
+nexys_4_ddr: synth/build/nexys_4_ddr.edif
+	rm -rf synth/build/nexys_4_ddr
+	vivado -nolog -nojournal -mode tcl -source synth/nexys_4_ddr/vivado.tcl
 
 clean:
 	rm -rf \

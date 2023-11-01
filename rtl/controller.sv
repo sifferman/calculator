@@ -42,10 +42,10 @@ logic new_number;
 assign new_number = (display_counter_q == 0);
 
 // ALU Interface
+calc_pkg::op_t alu_op_d, alu_op_q;
 assign alu_left_o = upper_rdata_i;
 assign alu_right_o = display_rdata_i;
 assign alu_op_o = alu_op_q;
-calc_pkg::op_t alu_op_d, alu_op_q;
 
 logic alu_out_ready_d, alu_out_ready_q;
 assign alu_out_ready_o = alu_out_ready_q;
