@@ -132,9 +132,16 @@ always_comb begin
                 upper_wdata_o = display_rdata_i;
                 upper_we_o = 1;
             end
-        end else if (calc_pkg::isDotButton(active_button_i)) begin
-            if (new_number)
+        end else if (calc_pkg::isDotButton(active_button_i) && (!dot_recieved_q)) begin
+            if (new_number) begin
                 display_counter_d++;
+                display_wdata_o = '0;
+                display_wdata_o.exponent = 0;
+            end else begin
+                display_wdata_o = display_rdata_i;
+                display_wdata_o.exponent = display_counter_q-1;
+            end
+            display_we_o = 1;
             dot_recieved_d = 1;
         end else if (calc_pkg::isOpButton(active_button_i)) begin
             alu_op_d = calc_pkg::button2op(active_button_i);

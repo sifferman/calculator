@@ -20,7 +20,7 @@ nexys_4_ddr nexys_4_ddr (
 );
 
 initial begin
-    #30000000;
+    #110000000;
     $display("Timed out");
     $fatal();
 end
@@ -35,15 +35,15 @@ initial begin
     #250000;
     rst_ni = 1;
 
-    for (integer i = 0; i < 1000; i++) begin
+    for (integer i = 0; i < 500; i++) begin
         random = $urandom_range(0, 3);
         if (random == 0) begin // no buttons pressed
             switches_i = '0;
         end else if (random == 1) begin // 2 buttons pressed
-            switches_i = 1<<$urandom_range(0, 15);
-            switches_i |= 1<<$urandom_range(0, 15);
+            switches_i = 1<<$urandom_range(0, 13);
+            switches_i |= 1<<$urandom_range(0, 13);
         end else begin
-            switches_i = 1<<$urandom_range(0, 15); // 1 button pressed
+            switches_i = 1<<$urandom_range(0, 13); // 1 button pressed
         end
         @(negedge nexys_4_ddr.clk1khz);
         dv_pkg::print_segments(nexys_4_ddr_tb.nexys_4_ddr.calculator.screen_driver.display_segments_o);

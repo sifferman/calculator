@@ -23,13 +23,13 @@ always_comb begin
     shift_amount = 'x;
 
     if (override_shift_amount_i) begin
-        // TODO: set num_decimal_places
         shift_amount = new_shift_amount_i;
+        num_decimal_places = (calc_pkg::NumDigits-1 - num_i.exponent - shift_amount);
     end else begin
         num_decimal_places = '0;
         for (i1 = calc_pkg::NumDigits-1; i1 >= 0; i1--) begin
             if ((num_i.significand[i1] != 0) && (i1 < calc_pkg::NumDigits-1-num_i.exponent))
-                num_decimal_places = calc_pkg::NumDigits-1-num_i.exponent-i1;
+                num_decimal_places = (calc_pkg::NumDigits-1 - num_i.exponent - i1);
         end
         shift_amount = (calc_pkg::NumDigits-1 - num_i.exponent - num_decimal_places);
     end
@@ -49,7 +49,7 @@ logic [$clog2(calc_pkg::NumDigits)-1:0] segments_counter_d, segments_counter_q;
 logic [calc_pkg::NumDigits-1:0]         segments_anode_d, segments_anode_q;
 
 assign segments_cathode_o = ~display_segments_o[segments_counter_q];
-assign segments_anode_o = segments_anode_q;
+assign segments_anode_o = (rst_i ? '1 : segments_anode_q);
 
 always_comb begin
     segments_anode_d = {segments_anode_q, segments_anode_q[calc_pkg::NumDigits-1]};
