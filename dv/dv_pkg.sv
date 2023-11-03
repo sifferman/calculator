@@ -65,7 +65,7 @@ package dv_pkg;
         string row5 = "";
         integer i = 0;
         integer s;
-        for (integer i = 0; i < calc_pkg::NumDigits; i++) begin
+        for (i = 0; i < calc_pkg::NumDigits; i++) begin
             s = calc_pkg::NumDigits-1-i;
             row1 = {row1, $sformatf(" %s    ",  (segments[s][6] ? "-" : " "))};
             row2 = {row2, $sformatf("%s %s   ", (segments[s][1] ? "|" : " "), (segments[s][5] ? "|" : " "))};
@@ -79,6 +79,35 @@ package dv_pkg;
         row4 = {row4, "\n"};
         row5 = {row5, "\n"};
         $display(row1, row2, row3, row4, row5);
+    endfunction
+
+    function automatic calc_pkg::buttons_t button2buttons(calc_pkg::active_button_t active_button);
+        unique case (active_button)
+            calc_pkg::B_CLEAR:      return '{clear:1, default:0};
+            calc_pkg::B_MEM_RECALL: return '{mem_recall:1, default:0};
+            calc_pkg::B_MEM_CLEAR:  return '{mem_clear:1, default:0};
+            calc_pkg::B_MEM_SUB:    return '{mem_sub:1, default:0};
+            calc_pkg::B_MEM_ADD:    return '{mem_add:1, default:0};
+            calc_pkg::B_OP_PERCENT: return '{op_percent:1, default:0};
+            calc_pkg::B_OP_SQRT:    return '{op_sqrt:1, default:0};
+            calc_pkg::B_OP_DIV:     return '{op_div:1, default:0};
+            calc_pkg::B_OP_MUL:     return '{op_mul:1, default:0};
+            calc_pkg::B_OP_SUB:     return '{op_sub:1, default:0};
+            calc_pkg::B_OP_ADD:     return '{op_add:1, default:0};
+            calc_pkg::B_OP_EQ:      return '{op_eq:1, default:0};
+            calc_pkg::B_DOT:        return '{dot:1, default:0};
+            calc_pkg::B_NUM_1:      return '{num_1:1, default:0};
+            calc_pkg::B_NUM_2:      return '{num_2:1, default:0};
+            calc_pkg::B_NUM_3:      return '{num_3:1, default:0};
+            calc_pkg::B_NUM_4:      return '{num_4:1, default:0};
+            calc_pkg::B_NUM_5:      return '{num_5:1, default:0};
+            calc_pkg::B_NUM_6:      return '{num_6:1, default:0};
+            calc_pkg::B_NUM_7:      return '{num_7:1, default:0};
+            calc_pkg::B_NUM_8:      return '{num_8:1, default:0};
+            calc_pkg::B_NUM_9:      return '{num_9:1, default:0};
+            calc_pkg::B_NUM_0:      return '{num_0:1, default:0};
+            default:                return '{default:0};
+        endcase
     endfunction
 
     `endif

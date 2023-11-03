@@ -23,6 +23,8 @@ jobs:
           tar -xzvf synlig-8935e3a-2023-10-05.tar.gz --strip-components=2 -C synlig
           rm -rf synlig-8935e3a-2023-10-05.tar.gz
           echo "$GITHUB_WORKSPACE/synlig/bin" >> $GITHUB_PATH
+      - run: make sim TOP=calculator_tb
+      - run: make gls TOP=calculator_tb
       - run: make sim TOP=controller_tb
       - run: make gls TOP=controller_tb
       - run: make sim TOP=alu_add_tb

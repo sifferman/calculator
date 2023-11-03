@@ -37,31 +37,31 @@ package calc_pkg;
     } buttons_t;
 
     typedef enum logic [4:0] {
-        B_NONE,
-        B_CLEAR,
-        B_MEM_RECALL,
-        B_MEM_CLEAR,
-        B_MEM_SUB,
-        B_MEM_ADD,
-        B_OP_PERCENT,
-        B_OP_SQRT,
-        B_OP_DIV,
-        B_OP_MUL,
-        B_OP_SUB,
-        B_OP_ADD,
-        B_OP_EQ,
-        B_DOT,
-        B_NUM_1,
-        B_NUM_2,
-        B_NUM_3,
-        B_NUM_4,
-        B_NUM_5,
-        B_NUM_6,
-        B_NUM_7,
-        B_NUM_8,
-        B_NUM_9,
-        B_NUM_0,
-        B_UNKNOWN
+        B_NONE,         // 00000
+        B_CLEAR,        // 00001
+        B_MEM_RECALL,   // 00010
+        B_MEM_CLEAR,    // 00011
+        B_MEM_SUB,      // 00100
+        B_MEM_ADD,      // 00101
+        B_OP_PERCENT,   // 00110
+        B_OP_SQRT,      // 00111
+        B_OP_DIV,       // 01000
+        B_OP_MUL,       // 01001
+        B_OP_SUB,       // 01010
+        B_OP_ADD,       // 01011
+        B_OP_EQ,        // 01100
+        B_DOT,          // 01101
+        B_NUM_1,        // 01110
+        B_NUM_2,        // 01111
+        B_NUM_3,        // 10000
+        B_NUM_4,        // 10001
+        B_NUM_5,        // 10010
+        B_NUM_6,        // 10011
+        B_NUM_7,        // 10100
+        B_NUM_8,        // 10101
+        B_NUM_9,        // 10110
+        B_NUM_0,        // 10111
+        B_UNKNOWN       // 11000
     } active_button_t;
 
     function automatic logic isNumberButton(calc_pkg::active_button_t active_button);
@@ -104,7 +104,7 @@ package calc_pkg;
  1 5    | |     |     |     |   | |   |     |       |   | |   | |
   0                  -     -     -     -     -           -     -
  2 4    | |     |   |       |     |     |   | |     |   | |     |
-  3      -           -     -           -     -           -     -
+  3  7   -           -     -           -     -           -     -
 
 */
     function automatic logic [6:0] bcd2segments(logic [3:0] bcd);
@@ -170,8 +170,8 @@ package calc_pkg;
     } num_t;
 
     function automatic num_t neg(num_t num);
-        num.sign ^= 1;
-        return num;
+        localparam num_t negative_zero = '{sign: 1, default: 0};
+        return num ^ negative_zero;
     endfunction
 
     function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);

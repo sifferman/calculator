@@ -42,10 +42,10 @@ logic new_number;
 assign new_number = (display_counter_q == 0);
 
 // ALU Interface
+calc_pkg::op_t alu_op_d, alu_op_q;
 assign alu_left_o = upper_rdata_i;
 assign alu_right_o = display_rdata_i;
 assign alu_op_o = alu_op_q;
-calc_pkg::op_t alu_op_d, alu_op_q;
 
 logic alu_out_ready_d, alu_out_ready_q;
 assign alu_out_ready_o = alu_out_ready_q;
@@ -94,6 +94,11 @@ always_comb begin
         if (alu_out_ready_q && alu_out_valid_i) begin // wait until out_valid
             alu_out_ready_d = 0;
             state_d = S_WAIT_FOR_INPUT;
+            if (op_pending_q) begin
+                upper_wdata_o = display_rdata_i;
+                upper_we_o = 1;
+            end
+
             if (state_q == S_HANDLE_OP) begin
                 op_pending_d = 1;
                 last_op_d = alu_op_q;
@@ -105,17 +110,12 @@ always_comb begin
                 op_pending_d = 0;
                 display_wdata_o = alu_result_i;
                 display_we_o = 1;
-                if (op_pending_q) begin
-                    upper_wdata_o = display_rdata_i;
-                    upper_we_o = 1;
-                end
             end
         end
     end else if (new_input_i) begin
         if (
             calc_pkg::isNumberButton(active_button_i) // a number was pressed
             && (display_counter_q < calc_pkg::NumDigits) // there is still space on the calculator
-            && !((new_number) && (active_button_i == calc_pkg::B_NUM_0)) // it is not a preceding zero
         ) begin
             if (new_number) begin
                 display_wdata_o = '0;
@@ -126,15 +126,24 @@ always_comb begin
             end
             display_wdata_o.significand[display_write_index] = calc_pkg::button2bcd(active_button_i);
             display_we_o = 1;
-            display_counter_d++;
+
+            if (!((new_number) && (active_button_i == calc_pkg::B_NUM_0))) // it is not a preceding zero
+                display_counter_d++;
 
             if (op_pending_q) begin
                 upper_wdata_o = display_rdata_i;
                 upper_we_o = 1;
             end
-        end else if (calc_pkg::isDotButton(active_button_i)) begin
-            if (new_number)
+        end else if (calc_pkg::isDotButton(active_button_i) && (!dot_recieved_q)) begin
+            if (new_number) begin
                 display_counter_d++;
+                display_wdata_o = '0;
+                display_wdata_o.exponent = 0;
+            end else begin
+                display_wdata_o = display_rdata_i;
+                display_wdata_o.exponent = display_counter_q-1;
+            end
+            display_we_o = 1;
             dot_recieved_d = 1;
         end else if (calc_pkg::isOpButton(active_button_i)) begin
             alu_op_d = calc_pkg::button2op(active_button_i);
