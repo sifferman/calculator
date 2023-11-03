@@ -170,8 +170,8 @@ package calc_pkg;
     } num_t;
 
     function automatic num_t neg(num_t num);
-        num.sign ^= 1;
-        return num;
+        localparam num_t negative_zero = '{sign: 1, default: 0};
+        return num ^ negative_zero;
     endfunction
 
     function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
