@@ -1,0 +1,11 @@
+{
+    // Auto Formatting
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+
+    // General
+    "files.associations": {
+        "*.xci": "xml",
+        "*.core": "yaml"
+    }
+}

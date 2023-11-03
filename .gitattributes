@@ -1,0 +1,15 @@
+
+# EOL
+*                   text eol=lf
+third_party/*       -text
+third_party/**/*    -text
+
+# Language Corrections
+*.vh    linguist-language=Verilog
+# Verilator
+*.vlt   linguist-language=SystemVerilog
+*.f     linguist-language=Shell
+# FuseSoC
+*.core  linguist-language=YAML
+# Vivado
+*.xci   linguist-language=XML
