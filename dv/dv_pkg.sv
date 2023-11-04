@@ -28,6 +28,7 @@ package dv_pkg;
         out = $itor(significand);
         out *= 10.0**(num.exponent);
         out *= 10.0**(-(calc_pkg::NumDigits-1));
+        if (num.sign) out *= -1;
         return out;
     endfunction
 
@@ -83,9 +84,9 @@ package dv_pkg;
 
     function automatic calc_pkg::buttons_t button2buttons(calc_pkg::active_button_t active_button);
         unique case (active_button)
-            calc_pkg::B_CLEAR:      return '{clear:1, default:0};
-            calc_pkg::B_MEM_RECALL: return '{mem_recall:1, default:0};
-            calc_pkg::B_MEM_CLEAR:  return '{mem_clear:1, default:0};
+            calc_pkg::B_ON:         return '{on:1, default:0};
+            calc_pkg::B_OFF:        return '{off:1, default:0};
+            calc_pkg::B_MEM_RC:     return '{mem_rc:1, default:0};
             calc_pkg::B_MEM_SUB:    return '{mem_sub:1, default:0};
             calc_pkg::B_MEM_ADD:    return '{mem_add:1, default:0};
             calc_pkg::B_OP_PERCENT: return '{op_percent:1, default:0};

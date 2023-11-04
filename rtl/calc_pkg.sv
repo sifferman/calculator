@@ -7,10 +7,10 @@
 package calc_pkg;
 
     typedef struct packed {
-        logic clear;
+        logic on;
+        logic off;
 
-        logic mem_recall;
-        logic mem_clear;
+        logic mem_rc;
         logic mem_sub;
         logic mem_add;
 
@@ -38,9 +38,9 @@ package calc_pkg;
 
     typedef enum logic [4:0] {
         B_NONE,         // 00000
-        B_CLEAR,        // 00001
-        B_MEM_RECALL,   // 00010
-        B_MEM_CLEAR,    // 00011
+        B_ON,           // 00001
+        B_OFF,          // 00010
+        B_MEM_RC,       // 00011
         B_MEM_SUB,      // 00100
         B_MEM_ADD,      // 00101
         B_OP_PERCENT,   // 00110

@@ -1,5 +1,6 @@
 
 rtl/calc_pkg.sv
+dv/dv_pkg.sv
 dv/model/alu_model_pkg.sv
 
 rtl/common/clk_divider.sv

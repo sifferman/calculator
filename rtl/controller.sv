@@ -113,7 +113,17 @@ always_comb begin
             end
         end
     end else if (new_input_i) begin
-        if (
+        if (active_button_i == calc_pkg::B_ON) begin
+            display_wdata_o = '0;
+            display_we_o = 1;
+            upper_wdata_o = '0;
+            upper_we_o = 1;
+
+            display_counter_d = '0;
+            last_op_d = calc_pkg::OP_ADD;
+            dot_recieved_d = 0;
+            op_pending_d = 0;
+        end else if (
             calc_pkg::isNumberButton(active_button_i) // a number was pressed
             && (display_counter_q < calc_pkg::NumDigits) // there is still space on the calculator
         ) begin

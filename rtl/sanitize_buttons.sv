@@ -21,9 +21,9 @@ always_comb begin
     if (!button_held_q) begin
 
         priority case (1)
-            buttons_pressed_q.clear:        active_button_o = calc_pkg::B_CLEAR;
-            buttons_pressed_q.mem_recall:   active_button_o = calc_pkg::B_MEM_RECALL;
-            buttons_pressed_q.mem_clear:    active_button_o = calc_pkg::B_MEM_CLEAR;
+            buttons_pressed_q.on:           active_button_o = calc_pkg::B_ON;
+            buttons_pressed_q.off:          active_button_o = calc_pkg::B_OFF;
+            buttons_pressed_q.mem_rc:       active_button_o = calc_pkg::B_MEM_RC;
             buttons_pressed_q.mem_sub:      active_button_o = calc_pkg::B_MEM_SUB;
             buttons_pressed_q.mem_add:      active_button_o = calc_pkg::B_MEM_ADD;
             buttons_pressed_q.op_percent:   active_button_o = calc_pkg::B_OP_PERCENT;
