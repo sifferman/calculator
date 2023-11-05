@@ -37,9 +37,9 @@ end
 always_comb begin
     led_o = '0;
     priority case (1)
-        buttons.clear:      led_o = calc_pkg::B_CLEAR;
-        buttons.mem_recall: led_o = calc_pkg::B_MEM_RECALL;
-        buttons.mem_clear:  led_o = calc_pkg::B_MEM_CLEAR;
+        buttons.on:         led_o = calc_pkg::B_ON;
+        buttons.off:        led_o = calc_pkg::B_OFF;
+        buttons.mem_rc:     led_o = calc_pkg::B_MEM_RC;
         buttons.mem_sub:    led_o = calc_pkg::B_MEM_SUB;
         buttons.mem_add:    led_o = calc_pkg::B_MEM_ADD;
         buttons.op_percent: led_o = calc_pkg::B_OP_PERCENT;
