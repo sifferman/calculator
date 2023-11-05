@@ -16,23 +16,24 @@ module screen_driver (
 logic [2:0] num_decimal_places;
 logic [2:0] shift_amount;
 
+logic [2:0] num_fractional_digits;
+assign num_fractional_digits = (calc_pkg::NumDigits-1 - num_i.exponent);
+
 logic signed [31:0] i1;
 always_comb begin
     i1 = 'x;
-    num_decimal_places = 'x;
-    shift_amount = 'x;
 
     if (override_shift_amount_i) begin
         shift_amount = new_shift_amount_i;
-        num_decimal_places = (calc_pkg::NumDigits-1 - num_i.exponent - shift_amount);
     end else begin
-        num_decimal_places = '0;
+        shift_amount = num_fractional_digits;
         for (i1 = calc_pkg::NumDigits-1; i1 >= 0; i1--) begin
-            if ((num_i.significand[i1] != 0) && (i1 < calc_pkg::NumDigits-1-num_i.exponent))
-                num_decimal_places = (calc_pkg::NumDigits-1 - num_i.exponent - i1);
+            if ((num_i.significand[i1] != 0) && (i1 < num_fractional_digits))
+                shift_amount = i1;
         end
-        shift_amount = (calc_pkg::NumDigits-1 - num_i.exponent - num_decimal_places);
     end
+
+    num_decimal_places = (num_fractional_digits - shift_amount);
 end
 
 logic signed [31:0] i2;
