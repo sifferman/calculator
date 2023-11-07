@@ -83,7 +83,7 @@ always_comb begin
     result_d = result_q;
     result_extra_d = result_extra_q;
 
-    case (state_q)
+    unique case (state_q)
         S_IDLE: begin
             result_d = '0;
             if (in_valid_i) begin

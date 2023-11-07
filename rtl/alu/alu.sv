@@ -25,7 +25,7 @@ assign out_valid_o = 1;
 `ifndef SYNTHESIS
 always_comb begin
     result_o = '0;
-    case (op_i)
+    unique case (op_i)
         calc_pkg::OP_NONE: ;
         calc_pkg::OP_ADD: result_o = alu_model_pkg::num_add(left_i, right_i);
         default: ;
@@ -68,10 +68,10 @@ always_comb begin
     // mult_in_valid = 0;
     // div_in_valid = 0;
     state_d = state_q;
-    case (state_q)
+    unique case (state_q)
         S_IDLE: begin
             if (in_valid_i) begin
-                case (op_i)
+                unique case (op_i)
                     calc_pkg::OP_NONE: ;
                     calc_pkg::OP_ADD: add_in_valid = 1;
                     // calc_pkg::OP_MUL: mult_in_valid = 1;

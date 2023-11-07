@@ -38,7 +38,7 @@ package dv_pkg;
         num.sign = $urandom_range(0,1);
         num.error = 0;
         random = $urandom_range(0,3);
-        case (random)
+        unique case (random)
             0: num.exponent = 0;
             1: num.exponent = 0;
             2: num.exponent = $urandom_range(1,6);
@@ -46,7 +46,7 @@ package dv_pkg;
         endcase
         for (integer j = 0; j < calc_pkg::NumDigits; j++) begin
             random = $urandom_range(0,1);
-            case (random)
+            unique case (random)
                 0: num.significand[j] = 0;
                 1: num.significand[j] = $urandom_range(1, 9);
             endcase
