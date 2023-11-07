@@ -13,38 +13,39 @@ module screen_driver (
 );
 
 
-logic [2:0] num_decimal_places;
 logic [2:0] shift_amount;
 
 logic [2:0] num_fractional_digits;
 assign num_fractional_digits = (calc_pkg::NumDigits-1 - num_i.exponent);
 
-logic signed [31:0] i1;
-always_comb begin
-    i1 = 'x;
+logic [2:0] num_decimal_places;
+assign num_decimal_places = (num_fractional_digits - shift_amount);
 
+always_comb begin : set_shift_amount
+    integer i;
+    i = '0;
     if (override_shift_amount_i) begin
         shift_amount = new_shift_amount_i;
     end else begin
         shift_amount = num_fractional_digits;
-        for (i1 = calc_pkg::NumDigits-1; i1 >= 0; i1--) begin
-            if ((num_i.significand[i1] != 0) && (i1 < num_fractional_digits))
-                shift_amount = i1;
+        for (i = calc_pkg::NumDigits-1; i >= 0; i--) begin
+            if ((num_i.significand[i] != 0) && (i < num_fractional_digits))
+                shift_amount = i;
         end
     end
-
-    num_decimal_places = (num_fractional_digits - shift_amount);
 end
 
-logic signed [31:0] i2;
-always_comb begin
+always_comb begin : set_display_segments
     display_segments_o = '0;
-    for (i2 = 0; i2 < calc_pkg::NumDigits; i2++) begin
-        if (calc_pkg::NumDigits-1 - i2 >= shift_amount)
-            display_segments_o[i2] = calc_pkg::bcd2segments(num_i.significand[i2+shift_amount]);
+    for (integer i = 0; i < calc_pkg::NumDigits; i++) begin
+        if (calc_pkg::NumDigits-1 - i >= shift_amount)
+            display_segments_o[i] = calc_pkg::bcd2segments(num_i.significand[i+shift_amount]);
     end
     display_segments_o[num_decimal_places][7] = 1;
 end
+
+
+// Driver for Nexys A7 Seven-Segment-Display
 
 logic [$clog2(calc_pkg::NumDigits)-1:0] segments_counter_d, segments_counter_q;
 logic [calc_pkg::NumDigits-1:0]         segments_anode_d, segments_anode_q;
