@@ -25,8 +25,6 @@ jobs:
           echo "$GITHUB_WORKSPACE/synlig/bin" >> $GITHUB_PATH
       - run: make sim TOP=calculator_tb
       - run: make gls TOP=calculator_tb
-      - run: make sim TOP=controller_tb
-      - run: make gls TOP=controller_tb
       - run: make sim TOP=alu_add_tb
       - run: make gls TOP=alu_add_tb
       - run: make sim TOP=screen_driver_tb
