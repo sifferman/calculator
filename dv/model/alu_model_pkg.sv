@@ -76,12 +76,6 @@ package alu_model_pkg;
         return nobcd2num(out_nobcd);
     endfunction
 
-    // Gold model for calc_pkg::num_t - calc_pkg::num_t
-    function automatic calc_pkg::num_t num_sub(calc_pkg::num_t left, calc_pkg::num_t right);
-        right.sign ^= 1;
-        return num_add(left, right);
-    endfunction
-
     `endif
 endpackage
 

@@ -30,6 +30,7 @@ module controller (
 
 // Status Registers and Counters
 logic                                   dot_recieved_d, dot_recieved_q;
+logic                                   minus_recieved_d, minus_recieved_q;
 logic                                   op_pending_d, op_pending_q;
 logic [$clog2(calc_pkg::NumDigits):0]   display_counter_d, display_counter_q;
 calc_pkg::op_t                          last_op_d, last_op_q;
@@ -72,6 +73,7 @@ always_comb begin
 
     display_counter_d = display_counter_q;
     dot_recieved_d = dot_recieved_q;
+    minus_recieved_d = minus_recieved_q;
 
     display_wdata_o = 'x;
     display_we_o = 0;
@@ -122,6 +124,7 @@ always_comb begin
             display_counter_d = '0;
             last_op_d = calc_pkg::OP_ADD;
             dot_recieved_d = 0;
+            minus_recieved_d = 0;
             op_pending_d = 0;
         end else if (
             calc_pkg::isNumberButton(active_button_i) // a number was pressed
@@ -161,12 +164,20 @@ always_comb begin
             display_counter_d = '0;
             dot_recieved_d = 0;
             state_d = S_HANDLE_OP;
+            display_wdata_o = display_rdata_i;
+            display_wdata_o.sign ^= minus_recieved_q;
+            display_we_o = 1;
+            minus_recieved_d = (active_button_i == calc_pkg::B_OP_SUB);
         end else if (calc_pkg::isEqButton(active_button_i)) begin
             alu_op_d = last_op_q;
             alu_in_valid_d = 1;
             display_counter_d = '0;
             dot_recieved_d = 0;
             state_d = S_HANDLE_EQ;
+            display_wdata_o = display_rdata_i;
+            display_wdata_o.sign ^= minus_recieved_q;
+            display_we_o = 1;
+            minus_recieved_d = 0;
         end
     end
 end
@@ -176,6 +187,7 @@ always_ff @(posedge clk_i) begin
         display_counter_q <= '0;
         last_op_q <= calc_pkg::OP_ADD;
         dot_recieved_q <= 0;
+        minus_recieved_q <= 0;
         op_pending_q <= 0;
         alu_out_ready_q <= 0;
         state_q <= S_WAIT_FOR_INPUT;
@@ -185,6 +197,7 @@ always_ff @(posedge clk_i) begin
         display_counter_q <= display_counter_d;
         last_op_q <= last_op_d;
         dot_recieved_q <= dot_recieved_d;
+        minus_recieved_q <= minus_recieved_d;
         op_pending_q <= op_pending_d;
         alu_out_ready_q <= alu_out_ready_d;
         state_q <= state_d;

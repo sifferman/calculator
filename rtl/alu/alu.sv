@@ -28,22 +28,12 @@ always_comb begin
     case (op_i)
         calc_pkg::OP_NONE: ;
         calc_pkg::OP_ADD: result_o = alu_model_pkg::num_add(left_i, right_i);
-        calc_pkg::OP_SUB: result_o = alu_model_pkg::num_sub(left_i, right_i);
         default: ;
     endcase
 end
 `endif
 
 end else begin : nomodel
-
-// handle sign change
-calc_pkg::num_t signed_right;
-always_comb begin
-    if (op_i == calc_pkg::OP_SUB)
-        signed_right = calc_pkg::neg(right_i);
-    else
-        signed_right = right_i;
-end
 
 // state machine and valid/ready
 typedef enum logic {
@@ -84,7 +74,6 @@ always_comb begin
                 case (op_i)
                     calc_pkg::OP_NONE: ;
                     calc_pkg::OP_ADD: add_in_valid = 1;
-                    calc_pkg::OP_SUB: add_in_valid = 1;
                     // calc_pkg::OP_MUL: mult_in_valid = 1;
                     // calc_pkg::OP_DIV: div_in_valid = 1;
                     default: ;
@@ -108,7 +97,7 @@ alu_add alu_add (
     .rst_i,
 
     .left_i,
-    .right_i(signed_right),
+    .right_i,
     .in_ready_o(add_in_ready),
     .in_valid_i(add_in_valid),
 

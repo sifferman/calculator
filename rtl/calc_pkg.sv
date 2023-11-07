@@ -126,10 +126,9 @@ package calc_pkg;
 
 
 
-    typedef enum logic [2:0] {
+    typedef enum logic [1:0] {
         OP_NONE,
         OP_ADD,
-        OP_SUB,
         OP_MUL,
         OP_DIV
     } op_t;
@@ -138,7 +137,7 @@ package calc_pkg;
         unique case (active_button)
             calc_pkg::B_OP_DIV: return calc_pkg::OP_DIV;
             calc_pkg::B_OP_MUL: return calc_pkg::OP_MUL;
-            calc_pkg::B_OP_SUB: return calc_pkg::OP_SUB;
+            calc_pkg::B_OP_SUB: return calc_pkg::OP_ADD;
             calc_pkg::B_OP_ADD: return calc_pkg::OP_ADD;
             default: return calc_pkg::OP_NONE;
         endcase
