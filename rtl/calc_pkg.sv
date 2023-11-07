@@ -107,7 +107,7 @@ package calc_pkg;
   3  7   -           -     -           -     -           -     -
 
 */
-    function automatic logic [6:0] bcd2segments(logic [3:0] bcd);
+    function automatic logic [6:0] bcd2segments(calc_pkg::bcd_t bcd);
         unique case (bcd)
             4'd0: return 7'b1111110;
             4'd1: return 7'b0110000;
@@ -119,12 +119,9 @@ package calc_pkg;
             4'd7: return 7'b1110000;
             4'd8: return 7'b1111111;
             4'd9: return 7'b1111011;
-            default: return 7'b1111011;
+            default: return 7'bxxxxxxx;
         endcase
     endfunction
-
-
-
 
     typedef enum logic [1:0] {
         OP_NONE,
@@ -162,25 +159,16 @@ package calc_pkg;
     parameter NumDigits = 8;
 
     typedef struct packed {
-        logic sign;
         logic error;
-        logic unsigned [$clog2(NumDigits)-1:0] exponent;
-        logic [NumDigits-1:0][3:0] significand;
+        logic sign;
+        logic unsigned [$clog2(calc_pkg::NumDigits)-1:0] exponent;
+        logic [calc_pkg::NumDigits-1:0][3:0] significand;
     } num_t;
 
     function automatic num_t neg(num_t num);
         localparam num_t negative_zero = '{sign: 1, default: 0};
         return num ^ negative_zero;
     endfunction
-
-    function automatic logic [NumDigits-1:0][3:0] leftshift_significand(logic [NumDigits-1:0][3:0] significand, logic [3:0] bcd);
-        return {significand[NumDigits-2:0], bcd};
-    endfunction
-    function automatic logic [NumDigits-1:0][3:0] rightshift_significand(logic [3:0] bcd, logic [NumDigits-1:0][3:0] significand);
-        return {bcd, significand[NumDigits-1:1]};
-    endfunction
-
-
 
 endpackage
 

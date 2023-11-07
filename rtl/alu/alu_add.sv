@@ -95,10 +95,10 @@ always_comb begin
         end
         S_NORMALIZE: begin
             if (left_q.exponent < right_q.exponent) begin
-                left_d.significand = calc_pkg::rightshift_significand(4'b0, left_q.significand);
+                left_d.significand = (left_q.significand >> 4);
                 left_d.exponent++;
             end else if (left_q.exponent > right_q.exponent) begin
-                right_d.significand = calc_pkg::rightshift_significand(4'b0, right_q.significand);
+                right_d.significand = (right_q.significand >> 4);
                 right_d.exponent++;
             end else begin
                 state_d = S_ADD;
@@ -128,12 +128,12 @@ always_comb begin
         S_RENORMALIZE: begin
             if (result_extra_q != '0) begin // shift right
                 result_extra_d = '0;
-                result_d.significand = calc_pkg::rightshift_significand(result_extra_q, result_q.significand);
+                result_d.significand = ({result_extra_q, result_q.significand} >> 4);
                 result_d.exponent++;
                 if (result_d.exponent == 0)
                     result_d.error = 1;
             end else if ((result_q.exponent != 0) && (result_q.significand[calc_pkg::NumDigits-1] == 0)) begin // shift left
-                result_d.significand = calc_pkg::leftshift_significand(result_q.significand, 4'b0);
+                result_d.significand = (result_q.significand << 4);
                 result_d.exponent--;
             end else begin // no shift
                 out_valid_d = 1;

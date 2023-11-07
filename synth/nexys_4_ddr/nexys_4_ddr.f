@@ -1,5 +1,5 @@
 
-synth/lint.vlt
+dv/lint.vlt
 
 rtl/calc_pkg.sv
 dv/dv_pkg.sv
