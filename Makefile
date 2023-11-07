@@ -4,6 +4,8 @@ RTL := $(shell python3 misc/convert_filelist.py Makefile rtl/rtl.f)
 # TOP := screen_driver_tb
 TOP := alu_add_tb
 
+YOSYS_DATDIR := $(shell yosys-config --datdir)
+
 .PHONY: lint sim synth gls nexys_4_ddr_gls clean
 
 all: clean sim gls
@@ -16,7 +18,7 @@ sim:
 	./$@_dir/V${TOP} +verilator+rand+reset+2
 
 gls: synth/build/synth.v
-	verilator --Mdir $@_dir -f synth/gls.f -f dv/dv.f --binary --top ${TOP}
+	verilator -I${YOSYS_DATDIR} --Mdir $@_dir -f synth/gls.f -f dv/dv.f --binary --top ${TOP}
 	./$@_dir/V${TOP} +verilator+rand+reset+2
 
 synth/build/rtl.sv2v.v: ${RTL}
@@ -38,7 +40,7 @@ synth/build/nexys_4_ddr.edif synth/build/nexys_4_ddr.v: synth/build/nexys_4_ddr.
 	yosys -c synth/nexys_4_ddr/yosys.tcl -l synth/build/nexys_4_ddr.log
 
 nexys_4_ddr_gls: synth/build/nexys_4_ddr.v
-	verilator --Mdir $@_dir -f synth/nexys_4_ddr/nexys_4_ddr.f -f dv/dv.f --binary --top nexys_4_ddr_tb
+	verilator -I${YOSYS_DATDIR} --Mdir $@_dir -f synth/nexys_4_ddr/nexys_4_ddr.f -f dv/dv.f --binary --top nexys_4_ddr_tb
 	./$@_dir/Vnexys_4_ddr_tb +verilator+rand+reset+2
 
 nexys_4_ddr: synth/build/nexys_4_ddr.edif
