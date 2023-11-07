@@ -23,9 +23,6 @@ wget -O - https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/in
 You can either run behavioral simulation or gate-level-simulation.
 
 ```bash
-# Initialize submodules
-git submodule update --init --recursive
-
 # Lint files in rtl/rtl.f
 make lint
 
@@ -34,9 +31,6 @@ make lint
 # gls - Simulate the synthesized netlist
 make sim TOP=calculator_tb
 make gls TOP=calculator_tb
-
-make sim TOP=controller_tb
-make gls TOP=controller_tb
 
 make sim TOP=alu_add_tb
 make gls TOP=alu_add_tb
