@@ -37,6 +37,7 @@ real display_wdata;
 real display_rdata;
 real upper_wdata;
 real upper_rdata;
+calc_pkg::active_button_t active_button;
 always_comb begin
     alu_left = dv_pkg::num2real(calculator.alu.left_i);
     alu_right = dv_pkg::num2real(calculator.alu.right_i);
@@ -45,6 +46,7 @@ always_comb begin
     display_rdata = dv_pkg::num2real(calculator.display.rdata_o);
     upper_wdata = dv_pkg::num2real(calculator.upper.wdata_i);
     upper_rdata = dv_pkg::num2real(calculator.upper.rdata_o);
+    active_button = calc_pkg::active_button_t'(calculator.active_button);
 end
 
 integer f;

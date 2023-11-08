@@ -40,4 +40,4 @@ nexys_4_ddr: synth/build/nexys_4_ddr.edif
 clean:
 	rm -rf \
 	 synth/build slpp_all abc.history \
-	 obj_dir gls_dir sim_dir dump.fst
+	 obj_dir gls_dir sim_dir nexys_4_ddr_gls_dir dump.fst

@@ -27,10 +27,15 @@ curl -sSL https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/in
 You can either run behavioral simulation or gate-level-simulation.
 
 ```bash
-# lint files in rtl/rtl.f
+# Initialize submodules
+git submodule update --init --recursive
+
+# Lint files in rtl/rtl.f
 make lint
 
-# run specific
+# Run specific test
+# sim - Simulate the SystemVerilog
+# gls - Simulate the synthesized netlist
 make sim TOP=calculator_tb
 make gls TOP=calculator_tb
 
@@ -43,9 +48,9 @@ make gls TOP=alu_add_tb
 make sim TOP=screen_driver_tb
 make gls TOP=screen_driver_tb
 
-# simulate nexys_4_ddr top module
+# Simulate nexys_4_ddr top module
 make nexys_4_ddr_gls
-# generate a bitstream
+# Generate a bitstream for the nexys_4_ddr
 make nexys_4_ddr
 ```
 

@@ -89,11 +89,11 @@ package calc_pkg;
     endfunction
 
     function automatic logic isEqButton(calc_pkg::active_button_t active_button);
-        return (active_button == B_OP_EQ);
+        return (active_button == calc_pkg::B_OP_EQ);
     endfunction
 
     function automatic logic isDotButton(calc_pkg::active_button_t active_button);
-        return (active_button == B_DOT);
+        return (active_button == calc_pkg::B_DOT);
     endfunction
 
     typedef logic [3:0] bcd_t;
@@ -165,8 +165,8 @@ package calc_pkg;
         logic [calc_pkg::NumDigits-1:0][3:0] significand;
     } num_t;
 
-    function automatic num_t neg(num_t num);
-        localparam num_t negative_zero = '{sign: 1, default: 0};
+    function automatic calc_pkg::num_t neg(calc_pkg::num_t num);
+        localparam calc_pkg::num_t negative_zero = '{sign: 1, default: 0};
         return num ^ negative_zero;
     endfunction
 
