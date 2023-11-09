@@ -126,6 +126,8 @@ always_comb begin
             dot_recieved_d = 0;
             minus_recieved_d = 0;
             op_pending_d = 0;
+        end else if (display_counter_q.error) begin
+            // do nothing if there is an error pending
         end else if (
             calc_pkg::isNumberButton(active_button_i) // a number was pressed
             && (display_counter_q < calc_pkg::NumDigits) // there is still space on the calculator
