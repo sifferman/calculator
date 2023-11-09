@@ -126,7 +126,7 @@ always_comb begin
             dot_recieved_d = 0;
             minus_recieved_d = 0;
             op_pending_d = 0;
-        end else if (display_counter_q.error) begin
+        end else if (display_rdata_i.error) begin
             // do nothing if there is an error pending
         end else if (
             calc_pkg::isNumberButton(active_button_i) // a number was pressed
