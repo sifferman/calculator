@@ -2,3 +2,9 @@
 	path = third_party/yosys
 	url = git@github.com:YosysHQ/yosys.git
 	shallow = true
+[submodule "third_party/HardFloat"]
+	path = third_party/HardFloat
+	url = git@github.com:bsg-external/HardFloat.git
+[submodule "third_party/basejump_stl"]
+	path = third_party/basejump_stl
+	url = git@github.com:bespoke-silicon-group/basejump_stl.git

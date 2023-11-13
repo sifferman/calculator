@@ -54,6 +54,16 @@ make nexys_4_ddr_gls
 make nexys_4_ddr
 ```
 
+## HardFloat
+
+[HardFloat Documentation](http://www.jhauser.us/arithmetic/HardFloat-1/doc/HardFloat-Verilog.html).
+
+* Conversions from Integer: [iNToRecFN](https://github.com/bsg-external/HardFloat/blob/master/source/iNToRecFN.v)
+* Conversions to Integer: [recFNToIN](https://github.com/bsg-external/HardFloat/blob/master/source/recFNToIN.v)
+* Addition and Subtraction: [addRecFN](https://github.com/bsg-external/HardFloat/blob/master/source/addRecFN.v)
+* Multiplication: [mulRecFN](https://github.com/bsg-external/HardFloat/blob/master/source/mulRecFN.v)
+* Division and Square Root: [divSqrtRecFN_small](https://github.com/bsg-external/HardFloat/blob/master/source/divSqrtRecFN_small.v)
+
 ## References
 
 * [T6M14S Datasheet](https://datasheetspdf.com/pdf-file/610519/ToshibaSemiconductor/T6M14S/1)
