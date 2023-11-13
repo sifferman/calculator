@@ -1,5 +1,5 @@
 
-RTL := $(shell cat rtl/rtl.f)
+RTL := $(shell python3 misc/convert_filelist.py Makefile rtl/rtl.f)
 # TOP := calculator_tb
 # TOP := screen_driver_tb
 TOP := alu_add_tb
