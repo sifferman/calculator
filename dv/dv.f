@@ -14,8 +14,6 @@ dv/screen_driver_tb.sv
 --assert
 --trace-fst
 --trace-structs
-+1364-2005ext+v
-+1800-2012ext+sv
 
 // Run with +verilator+rand+reset+2
 --x-assign unique
