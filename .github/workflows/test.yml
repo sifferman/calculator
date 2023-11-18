@@ -14,16 +14,16 @@ jobs:
           submodules: 'true'
       - name: Download OSS
         run: |
-          curl -JOL https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2023-10-09/oss-cad-suite-linux-x64-20231009.tgz
-          tar -xzvf oss-cad-suite-linux-x64-20231009.tgz -C ./
-          rm -rf oss-cad-suite-linux-x64-20231009.tgz
+          curl -JOL https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2023-10-20/oss-cad-suite-linux-x64-20231020.tgz
+          tar -xzvf oss-cad-suite-linux-x64-20231020.tgz -C ./
+          rm -rf oss-cad-suite-linux-x64-20231020.tgz
           echo "$GITHUB_WORKSPACE/oss-cad-suite/bin" >> $GITHUB_PATH
       - name: Download Synling
         run: |
-          curl -JOL https://github.com/chipsalliance/synlig/releases/download/2023-10-05-8935e3a/synlig-8935e3a-2023-10-05.tar.gz
+          curl -JOL https://github.com/chipsalliance/synlig/releases/download/2023-10-24-dd28e6d/synlig-dd28e6d-2023-10-24.tar.gz
           mkdir -p synlig
-          tar -xzvf synlig-8935e3a-2023-10-05.tar.gz --strip-components=2 -C synlig
-          rm -rf synlig-8935e3a-2023-10-05.tar.gz
+          tar -xzvf synlig-dd28e6d-2023-10-24.tar.gz --strip-components=2 -C synlig
+          rm -rf synlig-dd28e6d-2023-10-24.tar.gz
           echo "$GITHUB_WORKSPACE/synlig/bin" >> $GITHUB_PATH
       - run: make sim TOP=calculator_tb
       - run: make gls TOP=calculator_tb
