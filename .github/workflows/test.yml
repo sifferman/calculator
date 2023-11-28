@@ -12,13 +12,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Download OSS
+      - name: Download OSS 2023-10-20
         run: |
           curl -JOL https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2023-10-20/oss-cad-suite-linux-x64-20231020.tgz
           tar -xzvf oss-cad-suite-linux-x64-20231020.tgz -C ./
           rm -rf oss-cad-suite-linux-x64-20231020.tgz
           echo "$GITHUB_WORKSPACE/oss-cad-suite/bin" >> $GITHUB_PATH
-      - name: Download Synling
+      - name: Download Synling 2023-10-05
         run: |
           curl -JOL https://github.com/chipsalliance/synlig/releases/download/2023-10-24-dd28e6d/synlig-dd28e6d-2023-10-24.tar.gz
           mkdir -p synlig

@@ -1,7 +1,7 @@
 
 # Pocket Calculator Chip-on-Board
 
-> **Warning**
+> [!Warning]
 > This project is a work-in-progress. Some features may be incomplete or missing.
 
 ## About
@@ -12,13 +12,18 @@ This project is fully simulatable and synthesizable with open-source tools.
 
 ## Required Tools
 
-Install all required open-source tools in one commmand:
+<!-- Install all required open-source tools in one commmand:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/install | bash -s -- <build_dir> --oss-cad-suite --synlig
-```
+``` -->
 
-> :warning: Verilator's binary on OSS CAD Suite is broken as of Nov 3rd, 2023: [verilator/verilator#4621](https://github.com/verilator/verilator/issues/4621), [YosysHQ/oss-cad-suite-build#84](https://github.com/YosysHQ/oss-cad-suite-build/issues/84). The last known-good version is [2023-10-20](https://github.com/YosysHQ/oss-cad-suite-build/releases/tag/2023-10-20).
+Check [`".github/workflows/test.yml"`](https://github.com/sifferman/calculator/blob/main/.github/workflows/test.yml) to see all required tools.
+
+> [!WARNING]
+>
+> * Verilator's latest binary on OSS CAD Suite is broken ([YosysHQ/oss-cad-suite-build#84](https://github.com/YosysHQ/oss-cad-suite-build/issues/84)). The last known-good version is [YosysHQ/oss-cad-suite-build@2023-10-20](https://github.com/YosysHQ/oss-cad-suite-build/releases/tag/2023-10-20).
+> * Synlig's latest release is broken ([chipsalliance/synlig#2166](https://github.com/chipsalliance/synlig/pull/2166)). The last known-good version is [chipsalliance/synlig@2023-10-24-dd28e6d](https://github.com/chipsalliance/synlig/releases/tag/2023-10-24-dd28e6d).
 
 *Note: Vivado is required for Artix-7 FPGA PNR and bitstream generation: <https://www.xilinx.com/support/download.html>.*
 
