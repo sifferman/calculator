@@ -7,5 +7,10 @@
     "files.associations": {
         "*.xci": "xml",
         "*.core": "yaml"
-    }
+    },
+
+    // mshr-h.veriloghdl
+    "verilog.linting.linter": "verilator",
+    "verilog.linting.verilator.arguments": "-f rtl/rtl.f -f dv/dv.f",
+    "verilog.linting.verilator.runAtFileLocation": false
 }
