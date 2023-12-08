@@ -30,6 +30,10 @@ initial begin
     $fatal;
 end
 
+calc_pkg::num_t expected;
+
+
+
 real alu_left;
 real alu_right;
 real alu_result;
@@ -37,6 +41,7 @@ real display_wdata;
 real display_rdata;
 real upper_wdata;
 real upper_rdata;
+real expected_real;
 calc_pkg::active_button_t active_button;
 always_comb begin
     alu_left = dv_pkg::num2real(calculator.alu.left_i);
@@ -47,6 +52,7 @@ always_comb begin
     upper_wdata = dv_pkg::num2real(calculator.upper.wdata_i);
     upper_rdata = dv_pkg::num2real(calculator.upper.rdata_o);
     active_button = calc_pkg::active_button_t'(calculator.active_button);
+    expected_real = dv_pkg::num2real(expected);
 end
 
 integer f;
@@ -68,7 +74,6 @@ initial begin
 
     while (!$feof(f)) begin
 
-        calc_pkg::num_t expected;
         logic                               expected_error;
         logic                               expected_sign;
         logic [(calc_pkg::NumDigits*4)-1:0] expected_significand;
