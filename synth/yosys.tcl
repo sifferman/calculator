@@ -1,14 +1,7 @@
 
 yosys -import
-plugin -i systemverilog
-yosys -import
 
-# Get file list from "rtl/rtl.f"
-set pipe [open "| python3 ./misc/convert_filelist.py Synlig rtl/rtl.f" r]
-set RTL [read $pipe]
-close $pipe
-
-read_systemverilog -noinfo -nonote {*}$RTL
+read_verilog synth/build/rtl.sv2v.v
 
 prep
 opt

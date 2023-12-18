@@ -12,22 +12,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Download OSS 2023-10-20
+      - name: Download Tools
         run: |
-          curl -JOL https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2023-10-20/oss-cad-suite-linux-x64-20231020.tgz
-          tar -xzvf oss-cad-suite-linux-x64-20231020.tgz -C ./
-          rm -rf oss-cad-suite-linux-x64-20231020.tgz
+          wget -O - https://raw.githubusercontent.com/sifferman/hdl-tool-installer/main/install | bash -s -- . --oss-cad-suite --zachjs-sv2v
           echo "$GITHUB_WORKSPACE/oss-cad-suite/bin" >> $GITHUB_PATH
-      - name: Download Synling 2023-10-05
-        run: |
-          curl -JOL https://github.com/chipsalliance/synlig/releases/download/2023-10-24-dd28e6d/synlig-dd28e6d-2023-10-24.tar.gz
-          mkdir -p synlig
-          tar -xzvf synlig-dd28e6d-2023-10-24.tar.gz --strip-components=2 -C synlig
-          rm -rf synlig-dd28e6d-2023-10-24.tar.gz
-          echo "$GITHUB_WORKSPACE/synlig/bin" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/zachjs-sv2v" >> $GITHUB_PATH
       - run: make sim TOP=calculator_tb
       - run: make gls TOP=calculator_tb
       - run: make sim TOP=alu_add_tb
       - run: make gls TOP=alu_add_tb
       - run: make sim TOP=screen_driver_tb
       - run: make gls TOP=screen_driver_tb
+      - run: make synth/build/nexys_4_ddr.edif

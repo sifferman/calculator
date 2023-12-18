@@ -19,12 +19,20 @@ gls: synth/build/synth.v
 	verilator --Mdir $@_dir -f synth/gls.f -f dv/dv.f --binary --top ${TOP}
 	./$@_dir/V${TOP} +verilator+rand+reset+2
 
-synth synth/build/synth.json synth/build/synth.v: ${RTL} synth/yosys.tcl
+synth/build/rtl.sv2v.v: ${RTL}
+	mkdir -p synth/build
+	sv2v $^ -w $@
+
+synth synth/build/synth.json synth/build/synth.v: synth/build/rtl.sv2v.v synth/yosys.tcl
 	rm -rf slpp_all
 	mkdir -p synth/build
-	yosys -p 'tcl synth/yosys.tcl ${RTL}' -l synth/build/yosys.log
+	yosys -p 'tcl synth/yosys.tcl synth/build/rtl.sv2v.v' -l synth/build/yosys.log
 
-synth/build/nexys_4_ddr.edif synth/build/nexys_4_ddr.v: ${RTL} synth/nexys_4_ddr/nexys_4_ddr.sv synth/nexys_4_ddr/yosys.tcl
+synth/build/nexys_4_ddr.sv2v.v: ${RTL} synth/nexys_4_ddr/nexys_4_ddr.sv
+	mkdir -p synth/build
+	sv2v $^ -w $@
+
+synth/build/nexys_4_ddr.edif synth/build/nexys_4_ddr.v: synth/build/nexys_4_ddr.sv2v.v synth/nexys_4_ddr/yosys.tcl
 	rm -rf slpp_all
 	mkdir -p synth/build
 	yosys -c synth/nexys_4_ddr/yosys.tcl -l synth/build/nexys_4_ddr.log
