@@ -22,8 +22,7 @@ logic [2:0] num_decimal_places;
 assign num_decimal_places = (num_fractional_digits - shift_amount);
 
 always_comb begin : set_shift_amount
-    integer i;
-    i = '0;
+    integer i = '0;
     if (override_shift_amount_i) begin
         shift_amount = new_shift_amount_i;
     end else begin

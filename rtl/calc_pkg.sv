@@ -162,7 +162,7 @@ package calc_pkg;
         logic error;
         logic sign;
         logic unsigned [$clog2(calc_pkg::NumDigits)-1:0] exponent;
-        logic [calc_pkg::NumDigits-1:0][3:0] significand;
+        bcd_t [calc_pkg::NumDigits-1:0] significand;
     } num_t;
 
     function automatic calc_pkg::num_t neg(calc_pkg::num_t num);
