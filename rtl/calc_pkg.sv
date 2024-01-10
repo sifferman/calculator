@@ -64,7 +64,7 @@ package calc_pkg;
         B_UNKNOWN       // 11000
     } active_button_t;
 
-    function automatic logic isNumberButton(calc_pkg::active_button_t active_button);
+    function automatic logic isNumberButton(active_button_t active_button);
         return active_button inside {
             B_NUM_1,
             B_NUM_2,
@@ -79,7 +79,7 @@ package calc_pkg;
         };
     endfunction
 
-    function automatic logic isOpButton(calc_pkg::active_button_t active_button);
+    function automatic logic isOpButton(active_button_t active_button);
         return active_button inside {
             B_OP_DIV,
             B_OP_MUL,
@@ -88,12 +88,12 @@ package calc_pkg;
         };
     endfunction
 
-    function automatic logic isEqButton(calc_pkg::active_button_t active_button);
-        return (active_button == calc_pkg::B_OP_EQ);
+    function automatic logic isEqButton(active_button_t active_button);
+        return (active_button == B_OP_EQ);
     endfunction
 
-    function automatic logic isDotButton(calc_pkg::active_button_t active_button);
-        return (active_button == calc_pkg::B_DOT);
+    function automatic logic isDotButton(active_button_t active_button);
+        return (active_button == B_DOT);
     endfunction
 
     typedef logic [3:0] bcd_t;
@@ -107,7 +107,7 @@ package calc_pkg;
   3  7   -           -     -           -     -           -     -
 
 */
-    function automatic logic [6:0] bcd2segments(calc_pkg::bcd_t bcd);
+    function automatic logic [6:0] bcd2segments(bcd_t bcd);
         unique case (bcd)
             4'd0: return 7'b1111110;
             4'd1: return 7'b0110000;
@@ -130,28 +130,28 @@ package calc_pkg;
         OP_DIV
     } op_t;
 
-    function automatic calc_pkg::op_t button2op(calc_pkg::active_button_t active_button);
+    function automatic op_t button2op(active_button_t active_button);
         unique case (active_button)
-            calc_pkg::B_OP_DIV: return calc_pkg::OP_DIV;
-            calc_pkg::B_OP_MUL: return calc_pkg::OP_MUL;
-            calc_pkg::B_OP_SUB: return calc_pkg::OP_ADD;
-            calc_pkg::B_OP_ADD: return calc_pkg::OP_ADD;
-            default: return calc_pkg::OP_NONE;
+            B_OP_DIV: return OP_DIV;
+            B_OP_MUL: return OP_MUL;
+            B_OP_SUB: return OP_ADD;
+            B_OP_ADD: return OP_ADD;
+            default: return OP_NONE;
         endcase
     endfunction
 
-    function automatic calc_pkg::bcd_t button2bcd(calc_pkg::active_button_t active_button);
+    function automatic bcd_t button2bcd(active_button_t active_button);
         unique case (active_button)
-            calc_pkg::B_NUM_1: return 1;
-            calc_pkg::B_NUM_2: return 2;
-            calc_pkg::B_NUM_3: return 3;
-            calc_pkg::B_NUM_4: return 4;
-            calc_pkg::B_NUM_5: return 5;
-            calc_pkg::B_NUM_6: return 6;
-            calc_pkg::B_NUM_7: return 7;
-            calc_pkg::B_NUM_8: return 8;
-            calc_pkg::B_NUM_9: return 9;
-            calc_pkg::B_NUM_0: return 0;
+            B_NUM_1: return 1;
+            B_NUM_2: return 2;
+            B_NUM_3: return 3;
+            B_NUM_4: return 4;
+            B_NUM_5: return 5;
+            B_NUM_6: return 6;
+            B_NUM_7: return 7;
+            B_NUM_8: return 8;
+            B_NUM_9: return 9;
+            B_NUM_0: return 0;
             default: return 0;
         endcase
     endfunction
@@ -161,12 +161,12 @@ package calc_pkg;
     typedef struct packed {
         logic error;
         logic sign;
-        logic unsigned [$clog2(calc_pkg::NumDigits)-1:0] exponent;
-        bcd_t [calc_pkg::NumDigits-1:0] significand;
+        logic unsigned [$clog2(NumDigits)-1:0] exponent;
+        bcd_t [NumDigits-1:0] significand;
     } num_t;
 
-    function automatic calc_pkg::num_t neg(calc_pkg::num_t num);
-        localparam calc_pkg::num_t negative_zero = '{sign: 1, default: 0};
+    function automatic num_t neg(num_t num);
+        localparam num_t negative_zero = '{sign: 1, default: 0};
         return num ^ negative_zero;
     endfunction
 
