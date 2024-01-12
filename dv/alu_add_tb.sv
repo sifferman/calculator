@@ -29,7 +29,7 @@ alu_add dut (
 );
 
 real alu_add_result_q;
-always @* alu_add_result_q = dv_pkg::num2real(dut.result_o);
+always_comb alu_add_result_q = dv_pkg::num2real(dut.result_o);
 
 
 // Clock Generation
