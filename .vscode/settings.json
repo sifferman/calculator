@@ -11,6 +11,6 @@
 
     // mshr-h.veriloghdl
     "verilog.linting.linter": "verilator",
-    "verilog.linting.verilator.arguments": "-f rtl/rtl.f -f dv/dv.f",
+    "verilog.linting.verilator.arguments": "-f rtl/rtl.f -f dv/dv.f -Wall -Wno-MODDUP --timing",
     "verilog.linting.verilator.runAtFileLocation": false
 }

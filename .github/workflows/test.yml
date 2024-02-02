@@ -24,3 +24,4 @@ jobs:
       - run: make sim TOP=screen_driver_tb
       - run: make gls TOP=screen_driver_tb
       - run: make synth/build/nexys_4_ddr.edif
+      - run: make nexys_4_ddr_gls

@@ -66,7 +66,10 @@ end
 
 // generate clock
 logic clk1khz;
-clk_divider clk_divider (
+clk_divider #(
+    .IN_FREQ(100000.0),
+    .OUT_FREQ(1.0)
+) clk_divider (
     .clk_i(clk100mhz_i),
     .rst_i(0),
     .clk_o(clk1khz)

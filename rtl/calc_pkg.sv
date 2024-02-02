@@ -158,10 +158,12 @@ package calc_pkg;
 
     parameter NumDigits = 8;
 
+    typedef logic unsigned [$clog2(NumDigits)-1:0] exponent_t;
+
     typedef struct packed {
         logic error;
         logic sign;
-        logic unsigned [$clog2(NumDigits)-1:0] exponent;
+        exponent_t exponent;
         bcd_t [NumDigits-1:0] significand;
     } num_t;
 
