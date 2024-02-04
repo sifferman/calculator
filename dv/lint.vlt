@@ -4,3 +4,5 @@ lint_off -file "synth/build/*"
 
 lint_off -file "simlib.v"
 lint_off -file "xilinx/cells_sim.v"
+
+lint_off -rule GENUNNAMED

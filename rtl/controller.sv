@@ -7,14 +7,7 @@ module controller (
 
     output  logic                       override_shift_amount_o,
     output  logic [2:0]                 new_shift_amount_o,
-
-    output  logic                       display_we_o,
-    output  calc_pkg::num_t             display_wdata_o,
-    input   calc_pkg::num_t             display_rdata_i,
-
-    output  logic                       upper_we_o,
-    output  calc_pkg::num_t             upper_wdata_o,
-    input   calc_pkg::num_t             upper_rdata_i,
+    output  calc_pkg::num_t             display_data_o,
 
     output  calc_pkg::num_t             alu_left_o,
     output  calc_pkg::num_t             alu_right_o,
@@ -27,6 +20,20 @@ module controller (
     input   logic                       alu_out_valid_i
 );
 
+
+// Data registers
+calc_pkg::num_t display_data_d, display_data_q;
+calc_pkg::num_t upper_data_d, upper_data_q;
+always_ff @(posedge clk_i) begin
+    if (rst_i) begin
+        display_data_q <= '0;
+        upper_data_q <= '0;
+    end else begin
+        display_data_q <= display_data_d;
+        upper_data_q <= upper_data_d;
+    end
+end
+assign display_data_o = display_data_q;
 
 // Status Registers and Counters
 logic                                   dot_recieved_d, dot_recieved_q;
@@ -44,8 +51,8 @@ assign new_number = (display_counter_q == 0);
 
 // ALU Interface
 calc_pkg::op_t alu_op_d, alu_op_q;
-assign alu_left_o = upper_rdata_i;
-assign alu_right_o = display_rdata_i;
+assign alu_left_o = upper_data_q;
+assign alu_right_o = display_data_q;
 assign alu_op_o = alu_op_q;
 
 logic alu_out_ready_d, alu_out_ready_q;
@@ -75,11 +82,8 @@ always_comb begin
     dot_recieved_d = dot_recieved_q;
     minus_recieved_d = minus_recieved_q;
 
-    display_wdata_o = 'x;
-    display_we_o = 0;
-
-    upper_wdata_o = 'x;
-    upper_we_o = 0;
+    display_data_d = display_data_q;
+    upper_data_d = upper_data_q;
 
     alu_out_ready_d = alu_out_ready_q;
     alu_in_valid_d = alu_in_valid_q;
@@ -97,68 +101,59 @@ always_comb begin
             alu_out_ready_d = 0;
             state_d = S_WAIT_FOR_INPUT;
             if (op_pending_q) begin
-                upper_wdata_o = display_rdata_i;
-                upper_we_o = 1;
+                upper_data_d = display_data_q;
             end
 
             if (state_q == S_HANDLE_OP) begin
                 op_pending_d = 1;
                 last_op_d = alu_op_q;
                 if (op_pending_q) begin
-                    display_wdata_o = alu_result_i;
-                    display_we_o = 1;
+                    display_data_d = alu_result_i; // TO FIX
                 end
             end else if (state_q == S_HANDLE_EQ) begin
                 op_pending_d = 0;
-                display_wdata_o = alu_result_i;
-                display_we_o = 1;
+                display_data_d = alu_result_i;
             end
         end
     end else if (new_input_i) begin
         if (active_button_i == calc_pkg::B_ON) begin
-            display_wdata_o = '0;
-            display_we_o = 1;
-            upper_wdata_o = '0;
-            upper_we_o = 1;
+            display_data_d = '0;
+            upper_data_d = '0;
 
             display_counter_d = '0;
             last_op_d = calc_pkg::OP_ADD;
             dot_recieved_d = 0;
             minus_recieved_d = 0;
             op_pending_d = 0;
-        end else if (display_rdata_i.error) begin
+        end else if (display_data_q.error) begin
             // do nothing if there is an error pending
         end else if (
             calc_pkg::isNumberButton(active_button_i) // a number was pressed
             && (display_counter_q < calc_pkg::NumDigits) // there is still space on the calculator
         ) begin
             if (new_number) begin
-                display_wdata_o = '0;
+                display_data_d = '0;
             end else begin
-                display_wdata_o = display_rdata_i;
                 if (!dot_recieved_q)
-                    display_wdata_o.exponent++;
+                    display_data_d.exponent++;
             end
-            display_wdata_o.significand[display_write_index] = calc_pkg::button2bcd(active_button_i);
-            display_we_o = 1;
+            // TO FIX
+            display_data_d.significand[display_write_index] = calc_pkg::button2bcd(active_button_i);
 
             if (!((new_number) && (active_button_i == calc_pkg::B_NUM_0))) // it is not a preceding zero
                 display_counter_d++;
 
             if (op_pending_q) begin
-                upper_wdata_o = display_rdata_i;
-                upper_we_o = 1;
+                upper_data_d = display_data_q;
             end
         end else if (calc_pkg::isDotButton(active_button_i) && (!dot_recieved_q)) begin
             if (new_number) begin
                 display_counter_d++;
-                display_wdata_o = '0;
-                display_wdata_o.exponent = 0;
+                display_data_d = '0;
+                display_data_d.exponent = 0;
             end else begin
-                display_wdata_o = display_rdata_i;
-                display_wdata_o.exponent = display_counter_q-1;
+                display_data_d.exponent = display_counter_q-1;
             end
-            display_we_o = 1;
             dot_recieved_d = 1;
         end else if (calc_pkg::isOpButton(active_button_i)) begin
             alu_op_d = calc_pkg::button2op(active_button_i);
@@ -166,9 +161,7 @@ always_comb begin
             display_counter_d = '0;
             dot_recieved_d = 0;
             state_d = S_HANDLE_OP;
-            display_wdata_o = display_rdata_i;
-            display_wdata_o.sign ^= minus_recieved_q;
-            display_we_o = 1;
+            display_data_d.sign ^= minus_recieved_q;
             minus_recieved_d = (active_button_i == calc_pkg::B_OP_SUB);
         end else if (calc_pkg::isEqButton(active_button_i)) begin
             alu_op_d = last_op_q;
@@ -176,9 +169,7 @@ always_comb begin
             display_counter_d = '0;
             dot_recieved_d = 0;
             state_d = S_HANDLE_EQ;
-            display_wdata_o = display_rdata_i;
-            display_wdata_o.sign ^= minus_recieved_q;
-            display_we_o = 1;
+            display_data_d.sign ^= minus_recieved_q;
             minus_recieved_d = 0;
         end
     end

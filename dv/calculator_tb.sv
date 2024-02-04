@@ -47,10 +47,10 @@ always_comb begin
     alu_left = dv_pkg::num2real(calculator.alu.left_i);
     alu_right = dv_pkg::num2real(calculator.alu.right_i);
     alu_result = dv_pkg::num2real(calculator.alu.result_o);
-    display_wdata = dv_pkg::num2real(calculator.display.wdata_i);
-    display_rdata = dv_pkg::num2real(calculator.display.rdata_o);
-    upper_wdata = dv_pkg::num2real(calculator.upper.wdata_i);
-    upper_rdata = dv_pkg::num2real(calculator.upper.rdata_o);
+    display_wdata = dv_pkg::num2real(calculator.controller.display_data_d);
+    display_rdata = dv_pkg::num2real(calculator.controller.display_data_q);
+    upper_wdata = dv_pkg::num2real(calculator.controller.upper_data_d);
+    upper_rdata = dv_pkg::num2real(calculator.controller.upper_data_q);
     active_button = calc_pkg::active_button_t'(calculator.active_button);
     expected_real = dv_pkg::num2real(expected);
 end
@@ -126,9 +126,9 @@ initial begin
         while (calculator.controller.state_q != 0)
             @(negedge clk_i);
 
-        assert (expected == calculator.display.rdata_o)
+        assert (expected == calculator.controller.display_data_q)
         else begin
-            $display("Expected: %s | Recieved: %s", dv_pkg::num2string(expected), dv_pkg::num2string(calculator.display.rdata_o));
+            $display("Expected: %s | Recieved: %s", dv_pkg::num2string(expected), dv_pkg::num2string(calculator.controller.display_data_q));
             @(posedge clk_i);
             $fatal();
         end

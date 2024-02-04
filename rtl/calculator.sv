@@ -16,16 +16,6 @@ logic                       new_input;
 logic           override_shift_amount;
 logic [2:0]     new_shift_amount;
 
-logic           display_we;
-calc_pkg::num_t display_wdata;
-calc_pkg::num_t display_rdata;
-
-assign display_o = display_rdata;
-
-logic           upper_we;
-calc_pkg::num_t upper_wdata;
-calc_pkg::num_t upper_rdata;
-
 calc_pkg::num_t alu_left;
 calc_pkg::num_t alu_right;
 calc_pkg::op_t  alu_op;
@@ -44,14 +34,6 @@ sanitize_buttons sanitize_buttons (
     .active_button_o(active_button)
 );
 
-num_register display (
-    .clk_i,
-    .rst_i,
-    .we_i(display_we),
-    .wdata_i(display_wdata),
-    .rdata_o(display_rdata)
-);
-
 controller controller (
     .clk_i,
     .rst_i,
@@ -60,14 +42,7 @@ controller controller (
 
     .override_shift_amount_o(override_shift_amount),
     .new_shift_amount_o(new_shift_amount),
-
-    .display_we_o(display_we),
-    .display_wdata_o(display_wdata),
-    .display_rdata_i(display_rdata),
-
-    .upper_we_o(upper_we),
-    .upper_wdata_o(upper_wdata),
-    .upper_rdata_i(upper_rdata),
+    .display_data_o(display_o),
 
     .alu_left_o(alu_left),
     .alu_right_o(alu_right),
@@ -78,14 +53,6 @@ controller controller (
     .alu_result_i(alu_result),
     .alu_out_ready_o(alu_out_ready),
     .alu_out_valid_i(alu_out_valid)
-);
-
-num_register upper (
-    .clk_i,
-    .rst_i,
-    .we_i(upper_we),
-    .wdata_i(upper_wdata),
-    .rdata_o(upper_rdata)
 );
 
 alu alu (
@@ -104,7 +71,7 @@ alu alu (
 screen_driver screen_driver (
     .clk_i,
     .rst_i,
-    .num_i(display_rdata),
+    .num_i(display_o),
     .override_shift_amount_i(override_shift_amount),
     .new_shift_amount_i(new_shift_amount),
     .display_segments_o(display_segments_o),

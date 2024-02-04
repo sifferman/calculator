@@ -7,7 +7,6 @@ rtl/common/clk_divider.sv
 
 rtl/alu/alu_add.sv
 rtl/alu/alu.sv
-rtl/num_register.sv
 rtl/sanitize_buttons.sv
 rtl/controller.sv
 rtl/screen_driver.sv

@@ -56,6 +56,6 @@ calc_pkg::active_button_t active_button;
 always_comb active_button = calc_pkg::active_button_t'(nexys_4_ddr_tb.nexys_4_ddr.calculator.active_button);
 
 real num_real;
-always_comb num_real = dv_pkg::num2real(nexys_4_ddr_tb.nexys_4_ddr.calculator.display_rdata);
+always_comb num_real = dv_pkg::num2real(nexys_4_ddr_tb.nexys_4_ddr.calculator.display_o);
 
 endmodule
