@@ -5,13 +5,13 @@ module alu_add_tb;
 logic           clk_i;
 logic           rst_i;
 
-calc_pkg::num_t left;
-calc_pkg::num_t right;
+calc_pkg::num_t left = '0;
+calc_pkg::num_t right = '0;
 logic           in_ready;
-logic           in_valid;
+logic           in_valid = 0;
 
 calc_pkg::num_t result;
-logic           out_ready;
+logic           out_ready = 0;
 logic           out_valid;
 
 alu_add dut (
