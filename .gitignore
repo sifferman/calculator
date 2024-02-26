@@ -1,8 +1,9 @@
 
-# Yosys + Synlig
+*.log
+
+# Yosys
 synth/build
 slpp_all
-*.log
 abc.history
 
 # Verilator
@@ -12,3 +13,7 @@ sim_dir
 nexys_4_ddr_gls_dir
 *.fst
 *.fst.hier
+
+# Vivado
+.Xil
+*.jou
